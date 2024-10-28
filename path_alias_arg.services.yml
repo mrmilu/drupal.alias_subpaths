@@ -1,0 +1,14 @@
+services:
+  path_alias.manager:
+    class: '\Drupal\path_alias_arg\ArgAliasManager'
+    arguments: ['@path_alias.repository', '@path_alias.whitelist', '@language_manager', '@cache.data', '@datetime.time']
+  path_alias_arg.node_argument_subscriber:
+    class: Drupal\path_alias_arg\EventSubscriber\NodeArgumentEventSubscriber
+    arguments: ['@path_alias.manager', '@path.current', '@entity_type.manager']
+    tags:
+      - { name: event_subscriber }
+  cache_context.node_arguments:
+    class: Drupal\path_alias_arg\Cache\Context\NodeArgumentsCacheContext
+    arguments: ['@request_stack']
+    tags:
+      - { name: cache.context }

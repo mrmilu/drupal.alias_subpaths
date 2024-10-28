@@ -1,0 +1,7 @@
+name: 'Argument Path Alias'
+type: module
+description: 'Allows to search Path Alias with arguments.'
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - path_alias

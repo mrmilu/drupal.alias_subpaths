@@ -1,0 +1,7 @@
+path_alias_arg.node_type_arguments_form:
+  path: '/admin/structure/types/manage/{node_type}/path_alias_arguments'
+  defaults:
+    _form: '\Drupal\path_alias_arg\Form\NodePathAliasArgumentsForm'
+    _title: 'Path Alias Arguments'
+  requirements:
+    _permission: 'administer content types'
