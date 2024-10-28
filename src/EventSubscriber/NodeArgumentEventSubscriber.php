@@ -5,6 +5,7 @@ namespace Drupal\path_alias_arg\EventSubscriber;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Path\CurrentPathStack;
 use Drupal\path_alias\AliasManagerInterface;
+use Drupal\path_alias_arg\PathAliasArgStorage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -33,6 +34,11 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
   private EntityTypeManagerInterface $entityTypeManager;
 
   /**
+   * @var \Drupal\path_alias_arg\PathAliasArgStorage
+   */
+  private PathAliasArgStorage $path_alias_arg_storage;
+
+  /**
    * Constructs a new PathSubscriber instance.
    *
    * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
@@ -40,12 +46,19 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Path\CurrentPathStack $current_path
    *   The current path.
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
-   *   The entity type manager
+   *   The entity type manager.
+   * @param \Drupal\path_alias_arg\PathAliasArgStorage $path_alias_arg_storage
+   *   The path alias Storage handler.
    */
-  public function __construct(AliasManagerInterface $alias_manager, CurrentPathStack $current_path, EntityTypeManagerInterface $entityTypeManager) {
+  public function __construct(AliasManagerInterface $alias_manager,
+                              CurrentPathStack $current_path,
+                              EntityTypeManagerInterface $entityTypeManager,
+                              PathAliasArgStorage $path_alias_arg_storage
+  ) {
     $this->aliasManager = $alias_manager;
     $this->currentPath = $current_path;
     $this->entityTypeManager = $entityTypeManager;
+    $this->path_alias_arg_storage = $path_alias_arg_storage;
   }
 
   public static function getSubscribedEvents() {
@@ -93,6 +106,8 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
   }
 
   private function processArgument(mixed $argument, \Drupal\Core\Entity\EntityInterface|Node $node) {
+
+    //@TODO: unmock this
     $node_possible_arguments = [
       'node__page',
       'taxonomy_term__tags'
@@ -108,21 +123,9 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
   }
 
   function loadEntityByEncodedTitle($entity_type, $bundle, $string) {
-    $decoded_string = urldecode($string);
-
-    $entity_type_definition = $this->entityTypeManager->getDefinition($entity_type);
-    $bundle_field = $entity_type_definition->getKey('bundle');
-    $label_field = $entity_type_definition->getKey('label');
-
-    $query = \Drupal::entityQuery($entity_type)
-      ->accessCheck()
-      ->condition($bundle_field, $bundle)
-      ->condition($label_field, strtolower($decoded_string), 'LIKE');
-
-    $entity_ids = $query->execute();
-
-    if (!empty($entity_ids)) {
-      return \Drupal::entityTypeManager()->getStorage($entity_type)->load(reset($entity_ids));
+    if ($urlencoded_key_entity_data = $this->path_alias_arg_storage->getByUrlencodedKeyAndEntityType($string, $entity_type)) {
+      $entities = $this->entityTypeManager->getStorage($entity_type)->loadByProperties(['uuid' => $urlencoded_key_entity_data["entity_uuid"]]);
+      return reset($entities);
     }
 
     return NULL;

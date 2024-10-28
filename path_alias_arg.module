@@ -19,47 +19,15 @@ function path_alias_arg_preprocess_node(array &$variables) {
 }
 
 /**
- * Implements hook_entity_type_alter().
- */
-function path_alias_arg_entity_type_alter(array &$entity_types) {
-  foreach ($entity_types as $entity_type_id => $entity_type) {
-    $entity_types[$entity_type_id]->set('base_field_definitions', [
-      'url_encoded_key' => BaseFieldDefinition::create('string')
-        ->setLabel(t('Url Encoded Key'))
-        ->setDescription(t('An url enconded key to use as url argument.'))
-        ->setRequired(FALSE)
-        ->setDisplayOptions('form', [
-          'type' => 'string_textfield',
-          'weight' => 5,
-        ])
-        ->setDisplayOptions('view', [
-          'label' => 'above',
-          'type' => 'string',
-          'weight' => 5,
-        ]),
-    ]);
-  }
-}
-
-/**
  * Implements hook_entity_presave().
  */
 function path_alias_arg_entity_presave(EntityInterface $entity) {
-  if ($entity->isNew() && $entity->hasField('url_encoded_key')) {
-    $label = $entity->label();
-    $url_encoded_label = urlencode($label);
-
-    $entity_type_manager = \Drupal::service('entity_type.manager');
-    $storage = $entity_type_manager->getStorage($entity->getEntityTypeId());
-
-    $i = 1;
-    $unique_key = $url_encoded_label;
-    while ($storage->getQuery()->condition('url_encoded_key', $unique_key)->count()->execute() > 0) {
-      $unique_key = $url_encoded_label . '-' . $i;
-      $i++;
-    }
-
-    $entity->set('url_encoded_key', $unique_key);
+  /** @var \Drupal\path_alias_arg\PathAliasArgStorage $storage */
+  $storage = \Drupal::service('path_alias_arg.path_alias_arg_storage');
+  if ($record = $storage->getByEntityUuid($entity->uuid())) {
+    $storage->updateRecord($entity->uuid(), strtolower(urlencode($entity->label())));
+    return;
   }
+  $storage->insertRecord($entity->uuid(), strtolower(urlencode($entity->label())), $entity->getEntityTypeId());
 }
 

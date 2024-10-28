@@ -1,0 +1,35 @@
+<?php
+
+/**
+ * Implements hook_schema().
+ */
+function path_alias_arg_schema() {
+  $schema['path_alias_arg_node_key_map'] = [
+    'description' => 'Node key map for path_alias_arg module.',
+    'fields' => [
+      'entity_uuid' => [
+        'description' => 'entity id',
+        'type' => 'varchar',
+        'length' => 128,
+        'not null' => TRUE,
+        'unique' => TRUE,
+      ],
+      'urlencoded_key' => [
+        'description' => 'urlencoded key',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'unique' => TRUE,
+      ],
+      'entity_type' => [
+        'description' => 'entity type',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ],
+    ],
+    'primary key' => ['entity_uuid'],
+  ];
+
+  return $schema;
+}
