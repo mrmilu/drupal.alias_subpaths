@@ -87,7 +87,7 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
     if ($node instanceof Node) {
 
       $config = \Drupal::config('path_alias_arg.settings');
-      $allowed_argument_types = $config->get($node->bundle() . '__selected_entity_bundles');
+      $allowed_argument_types = $config->get($node->bundle() . '__allowed_argument_types');
       if (!$allowed_argument_types) {
         return;
       }

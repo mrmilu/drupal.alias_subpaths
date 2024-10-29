@@ -27,7 +27,7 @@ class NodePathAliasArgumentsForm extends FormBase {
     $entity_types = $this->getEntityTypeOptions();
 
     $config = \Drupal::config('path_alias_arg.settings');
-    $saved_values = $config->get($node_type . '__selected_entity_bundles') ?? [];
+    $saved_values = $config->get($node_type . '__allowed_argument_types') ?? [];
 
     if (!$form_state->has('node_path_alias_arguments_rows')) {
       $form_state->set('node_path_alias_arguments_rows', count($saved_values) > 0 ? count($saved_values) : 1);
@@ -159,7 +159,7 @@ class NodePathAliasArgumentsForm extends FormBase {
     unset($values['node_type']);
     $result = array_map(fn($row) => $row['entity_type'] . '__' . $row['bundle'], $values);
     \Drupal::configFactory()->getEditable('path_alias_arg.settings')
-      ->set($node_type . '__selected_entity_bundles', $result)
+      ->set($node_type . '__allowed_argument_types', $result)
       ->save();
     $this->messenger()->addMessage($this->t('Configuration saved.'));
   }
