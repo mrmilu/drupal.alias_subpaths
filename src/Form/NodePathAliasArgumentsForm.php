@@ -25,32 +25,57 @@ class NodePathAliasArgumentsForm extends FormBase {
 
   public function buildForm(array $form, FormStateInterface $form_state, $node_type = NULL) {
     $entity_types = $this->getEntityTypeOptions();
+
+    $config = \Drupal::config('path_alias_arg.settings');
+    $saved_values = $config->get($node_type . '__selected_entity_bundles') ?? [];
+
     if (!$form_state->has('node_path_alias_arguments_rows')) {
-      $form_state->set('node_path_alias_arguments_rows', 1);
+      $form_state->set('node_path_alias_arguments_rows', count($saved_values) > 0 ? count($saved_values) : 1);
     }
     $rows = $form_state->get('node_path_alias_arguments_rows');
-    $form['node_path_alias_arguments_rows'] = ['#type' => 'container', '#tree' => TRUE];
+
+    $form['node_path_alias_arguments_rows'] = [
+      '#type' => 'container',
+      '#tree' => TRUE,
+    ];
+    $form['node_path_alias_arguments_rows']['node_type'] = [
+      '#type' => 'hidden',
+      '#value' => $node_type,
+    ];
+
     for ($i = 0; $i < $rows; $i++) {
+      $default_entity_type = isset($saved_values[$i]) ? explode('__', $saved_values[$i])[0] : NULL;
+      $default_bundle = isset($saved_values[$i]) ? explode('__', $saved_values[$i])[1] : NULL;
+      $form['node_path_alias_arguments_rows'][$i] = [
+        '#type' => 'details',
+        '#title' => 'Argument #' . $i,
+        '#open' => TRUE,
+      ];
       $form['node_path_alias_arguments_rows'][$i]['entity_type'] = [
         '#type' => 'select',
         '#title' => $this->t('Entity Type'),
         '#options' => $entity_types,
         '#empty_option' => $this->t('- Select entity type -'),
+        '#default_value' => $default_entity_type,
         '#ajax' => [
           'callback' => '::updateBundleOptions',
           'event' => 'change',
           'wrapper' => 'bundle-select-wrapper-' . $i,
         ],
       ];
+
+      $selected_entity_type = $form_state->getValue(['node_path_alias_arguments_rows', $i, 'entity_type']) ?? $default_entity_type;
       $form['node_path_alias_arguments_rows'][$i]['bundle'] = [
         '#type' => 'select',
         '#title' => $this->t('Bundle'),
         '#prefix' => '<div id="bundle-select-wrapper-' . $i . '">',
         '#suffix' => '</div>',
-        '#options' => $this->getBundleOptions($form_state->getValue(['node_path_alias_arguments_rows', $i, 'entity_type'])),
+        '#options' => $this->getBundleOptions($selected_entity_type),
         '#empty_option' => $this->t('- Select bundle -'),
+        '#default_value' => $default_bundle,
       ];
     }
+
     $form['add_row'] = [
       '#type' => 'submit',
       '#value' => $this->t('Add another'),
@@ -60,6 +85,7 @@ class NodePathAliasArgumentsForm extends FormBase {
         'wrapper' => 'node-path-alias-arguments-wrapper',
       ],
     ];
+
     if ($rows > 1) {
       $form['remove_row'] = [
         '#type' => 'submit',
@@ -71,14 +97,25 @@ class NodePathAliasArgumentsForm extends FormBase {
         ],
       ];
     }
+
     $form['#prefix'] = '<div id="node-path-alias-arguments-wrapper">';
     $form['#suffix'] = '</div>';
+
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Save'),
+    ];
+
     return $form;
   }
 
   public function updateBundleOptions(array &$form, FormStateInterface $form_state) {
-    return $form['node_path_alias_arguments_rows'][$form_state->getTriggeringElement()['#parents'][1]]['bundle'];
+    $triggering_element = $form_state->getTriggeringElement();
+    $index = $triggering_element['#parents'][1];
+
+    return $form['node_path_alias_arguments_rows'][$index]['bundle'];
   }
+
 
   protected function getEntityTypeOptions() {
     $entity_types = \Drupal::entityTypeManager()->getDefinitions();
@@ -118,11 +155,12 @@ class NodePathAliasArgumentsForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValue('node_path_alias_arguments_rows');
+    $node_type = $values['node_type'];
+    unset($values['node_type']);
     $result = array_map(fn($row) => $row['entity_type'] . '__' . $row['bundle'], $values);
-    \Drupal::configFactory()->getEditable('custom_entity_bundle_selector.settings')
-      ->set('selected_entity_bundles', $result)
+    \Drupal::configFactory()->getEditable('path_alias_arg.settings')
+      ->set($node_type . '__selected_entity_bundles', $result)
       ->save();
     $this->messenger()->addMessage($this->t('Configuration saved.'));
   }
-
 }

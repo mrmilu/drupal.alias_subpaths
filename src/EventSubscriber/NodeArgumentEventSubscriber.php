@@ -78,13 +78,23 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
 
     $alias = $request->getPathInfo();
     $path = $this->currentPath->getPath($request);
+    if ($alias === $path) {
+      return;
+    }
 
     $node = $this->loadNodeByPath($path);
 
     if ($node instanceof Node) {
+
+      $config = \Drupal::config('path_alias_arg.settings');
+      $allowed_argument_types = $config->get($node->bundle() . '__selected_entity_bundles');
+      if (!$allowed_argument_types) {
+        return;
+      }
       $arguments = [];
+
       foreach ($this->aliasManager->getPathArgumentsByAlias($alias) as $argument) {
-        if (($processed_argument = $this->processArgument($argument, $node)) === NULL ) {
+        if (($processed_argument = $this->processArgument($argument, $allowed_argument_types)) === NULL ) {
           throw new NotFoundHttpException();
         }
         $processed_argument_key = $this->getProcessedArgumentKey($processed_argument);
@@ -105,15 +115,8 @@ class NodeArgumentEventSubscriber implements EventSubscriberInterface {
     return null;
   }
 
-  private function processArgument(mixed $argument, \Drupal\Core\Entity\EntityInterface|Node $node) {
-
-    //@TODO: unmock this
-    $node_possible_arguments = [
-      'node__page',
-      'taxonomy_term__tags'
-    ];
-
-    foreach ($node_possible_arguments as $entity_type_bundle) {
+  private function processArgument(mixed $argument, $allowed_argument_types) {
+    foreach ($allowed_argument_types as $entity_type_bundle) {
       [$entity_type, $bundle] = explode('__', $entity_type_bundle);
       if ($entity = $this->loadEntityByEncodedTitle($entity_type, $bundle, $argument)) {
         return $entity;
