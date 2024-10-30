@@ -6,19 +6,6 @@ use Drupal\Core\Entity\EntityInterface;
  * Implements hook_preprocess_node().
  */
 function path_alias_arg_preprocess_node(array &$variables) {
+  $contextBag = \Drupal::service('path_alias_arg.context_manager')->getContextBag();
   $variables['#cache']['contexts'][] = 'node_arguments';
 }
-
-/**
- * Implements hook_entity_presave().
- */
-function path_alias_arg_entity_presave(EntityInterface $entity) {
-  /** @var \Drupal\path_alias_arg\PathAliasArgStorage $storage */
-  $storage = \Drupal::service('path_alias_arg.path_alias_arg_storage');
-  if ($storage->getByEntityUuid($entity->uuid())) {
-    $storage->updateRecord($entity->uuid(), strtolower(urlencode($entity->label())));
-    return;
-  }
-  $storage->insertRecord($entity->uuid(), strtolower(urlencode($entity->label())), $entity->getEntityTypeId());
-}
-

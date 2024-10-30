@@ -1,17 +1,16 @@
 services:
   path_alias.manager:
     class: '\Drupal\path_alias_arg\ArgAliasManager'
-    arguments: ['@path_alias.repository', '@path_alias.whitelist', '@language_manager', '@cache.data', '@datetime.time']
-  path_alias_arg.node_argument_subscriber:
-    class: Drupal\path_alias_arg\EventSubscriber\NodeArgumentEventSubscriber
-    arguments: ['@path_alias.manager', '@path.current', '@entity_type.manager', '@path_alias_arg.path_alias_arg_storage']
-    tags:
-      - { name: event_subscriber }
+    arguments: ['@path_alias.repository', '@path_alias.whitelist', '@language_manager', '@cache.data', '@path_alias_arg.context_manager']
   cache_context.node_arguments:
     class: Drupal\path_alias_arg\Cache\Context\NodeArgumentsCacheContext
     arguments: ['@request_stack']
     tags:
       - { name: cache.context }
-  path_alias_arg.path_alias_arg_storage:
-    class: Drupal\path_alias_arg\PathAliasArgStorage
-    arguments: ['@database']
+  path_alias_arg.context_manager:
+    class: '\Drupal\path_alias_arg\ContextManager'
+  path_alias_arg.breadcrumb:
+    class: '\Drupal\path_alias_arg\Breadcrumb\PathAliasArgBreadcrumbBuilder'
+    arguments: ['@router.admin_context']
+    tags:
+      - { name: breadcrumb_builder, priority: 5 }

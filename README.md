@@ -21,12 +21,8 @@ There is a submodule called `path_alias_arg_examples` that uses it into `hook_pr
 function path_alias_arg_preprocess_node(array &$variables) {
   $node = $variables['node'];
   if ($node->bundle() === 'filtered_page') {
-    $variables['#cache']['contexts'][] = 'node_arguments';
-    $request = \Drupal::request();
-
     // Set path_alias_arguments as node variables.
-    $variables['path_alias_arguments'] = $request->attributes->get('path_alias_arguments');
+    $variables['path_alias_arguments'] = \Drupal::service('path_alias_arg.context_manager')->getContextBag();
   }
 }
-
 ```
