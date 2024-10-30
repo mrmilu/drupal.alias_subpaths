@@ -1,6 +1,6 @@
-name: 'Argument Path Alias Examples'
+name: 'Argument Path Alias Node'
 type: module
-description: 'Examples for path_alias_arg module.'
+description: 'Node argument processor path_alias_arg module.'
 core_version_requirement: ^10 || ^11
 package: Custom
 dependencies:

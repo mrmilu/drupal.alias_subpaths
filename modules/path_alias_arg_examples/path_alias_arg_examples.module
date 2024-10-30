@@ -8,5 +8,7 @@ function path_alias_arg_preprocess_node(array &$variables) {
   if ($node->bundle() === 'filtered_page') {
     // Set path_alias_arguments as node variables.
     $variables['path_alias_arguments'] = \Drupal::service('path_alias_arg.context_manager')->getContextBag();
+    // Set processed path_alias_arguments as node variables
+    $variables['path_alias_arguments_processed'] = \Drupal::service('path_alias_arg.context_manager')->getProcessedContextBag();
   }
 }
