@@ -14,3 +14,11 @@ services:
     arguments: ['@router.admin_context']
     tags:
       - { name: breadcrumb_builder, priority: 5 }
+  plugin.manager.argument_processor:
+    class: Drupal\path_alias_arg\Plugin\ArgumentProcessorManager
+    parent: default_plugin_manager
+  path_alias_arg.argument_processor_subscriber:
+    class: Drupal\path_alias_arg\EventSubscriber\ArgumentProcessorEventSubscriber
+    arguments: ['@plugin.manager.argument_processor']
+    tags:
+      - { name: event_subscriber }
