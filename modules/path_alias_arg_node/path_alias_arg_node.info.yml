@@ -1,7 +1,0 @@
-name: 'Argument Path Alias Node'
-type: module
-description: 'Node argument processor path_alias_arg module.'
-core_version_requirement: ^10 || ^11
-package: Custom
-dependencies:
-  - path_alias_arg:path_alias_arg

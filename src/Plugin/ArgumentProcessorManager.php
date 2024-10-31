@@ -1,11 +1,11 @@
 <?php
 
-namespace Drupal\path_alias_arg\Plugin;
+namespace Drupal\alias_subpaths\Plugin;
 
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
-use Drupal\path_alias_arg\Plugin\Attribute\ArgumentProcessor;
+use Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor;
 
 class ArgumentProcessorManager extends DefaultPluginManager {
 
@@ -17,7 +17,7 @@ class ArgumentProcessorManager extends DefaultPluginManager {
       'Plugin/ArgumentProcessor',
       $namespaces,
       $module_handler,
-      'Drupal\path_alias_arg\Plugin\ArgumentProcessorInterface',
+      'Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface',
       ArgumentProcessor::class
     );
     $this->alterInfo('argument_processor_info');

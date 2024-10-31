@@ -1,6 +1,6 @@
-name: 'Argument Path Alias'
+name: 'Alias Subpaths'
 type: module
-description: 'Allows to search Path Alias with arguments.'
+description: 'Allows have aliases with subpaths.'
 core_version_requirement: ^10 || ^11
 package: Custom
 dependencies:

@@ -1,17 +1,18 @@
 <?php
 
-namespace Drupal\path_alias_arg;
+namespace Drupal\alias_subpaths;
 
+use Drupal\Component\Datetime\TimeInterface;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
 use Drupal\path_alias\AliasManager;
 use Drupal\path_alias\AliasRepositoryInterface;
 use Drupal\path_alias\AliasWhitelistInterface;
 
-class ArgAliasManager extends AliasManager {
+class AliasSubpathsAliasManager extends AliasManager {
 
   /**
-   * @var \Drupal\path_alias_arg\ContextManager
+   * @var \Drupal\alias_subpaths\ContextManager
    */
   private ContextManager $context_manager;
 
@@ -20,16 +21,18 @@ class ArgAliasManager extends AliasManager {
    * @param \Drupal\path_alias\AliasWhitelistInterface $whitelist
    * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
    * @param \Drupal\Core\Cache\CacheBackendInterface $cache
-   * @param \Drupal\path_alias_arg\ContextManager $context_manager
+   * @param \Drupal\Component\Datetime\TimeInterface $time
+   * @param \Drupal\alias_subpaths\ContextManager $context_manager
    */
   public function __construct(
     AliasRepositoryInterface $alias_repository,
     AliasWhitelistInterface $whitelist,
     LanguageManagerInterface $language_manager,
     CacheBackendInterface $cache,
+    TimeInterface $time,
     ContextManager $context_manager,
   ) {
-    parent::__construct($alias_repository, $whitelist, $language_manager, $cache);
+    parent::__construct($alias_repository, $whitelist, $language_manager, $cache, $time);
     $this->context_manager = $context_manager;
   }
 

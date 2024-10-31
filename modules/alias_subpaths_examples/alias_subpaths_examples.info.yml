@@ -1,0 +1,7 @@
+name: 'Alias Subpaths Examples'
+type: module
+description: 'Examples for alias_subpaths module.'
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - alias_subpaths:alias_subpaths

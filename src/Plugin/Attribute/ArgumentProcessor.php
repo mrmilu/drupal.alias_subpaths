@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\path_alias_arg\Plugin\Attribute;
+namespace Drupal\alias_subpaths\Plugin\Attribute;
 
 use Attribute;
 use Drupal\Component\Plugin\Attribute\Plugin;

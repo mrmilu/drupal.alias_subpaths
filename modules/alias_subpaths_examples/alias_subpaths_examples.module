@@ -1,0 +1,14 @@
+<?php
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function alias_subpaths_examples_preprocess_node(array &$variables) {
+  $node = $variables['node'];
+  if ($node->bundle() === 'filtered_page') {
+    // Set alias subpaths arguments as node variables.
+    $variables['alias_subpaths_arguments'] = \Drupal::service('alias_subpaths.context_manager')->getContextBag();
+    // Set processed alias subpaths arguments as node variables
+    $variables['alias_subpaths_arguments_processed'] = \Drupal::service('alias_subpaths.context_manager')->getProcessedContextBag();
+  }
+}

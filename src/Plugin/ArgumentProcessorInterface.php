@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\path_alias_arg\Plugin;
+namespace Drupal\alias_subpaths\Plugin;
 
 interface ArgumentProcessorInterface {
   public function process();

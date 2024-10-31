@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\path_alias_arg;
+namespace Drupal\alias_subpaths;
 
 class ContextManager {
 

@@ -12,17 +12,17 @@ This module allows to resolve to this node URLs like:
 
 This URL entities (taxonomy, content, etc.) are stored into request attributes to be used later.
 
-There is a submodule called `path_alias_arg_examples` that uses it into `hook_preprocess_node`:
+There is a submodule called `alias_subpaths_examples` that uses it into `hook_preprocess_node`:
 
 ```php
 /**
  * Implements hook_preprocess_node().
  */
-function path_alias_arg_preprocess_node(array &$variables) {
+function alias_subpaths_example_preprocess_node(array &$variables) {
   $node = $variables['node'];
   if ($node->bundle() === 'filtered_page') {
-    // Set path_alias_arguments as node variables.
-    $variables['path_alias_arguments'] = \Drupal::service('path_alias_arg.context_manager')->getContextBag();
+    // Set alias subpaths arguments as node variables.
+    $variables['alias_subpaths_arguments'] = \Drupal::service('alias_subpaths.context_manager')->getContextBag();
   }
 }
 ```

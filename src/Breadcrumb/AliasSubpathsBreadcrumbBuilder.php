@@ -1,13 +1,13 @@
 <?php
 
-namespace Drupal\path_alias_arg\Breadcrumb;
+namespace Drupal\alias_subpaths\Breadcrumb;
 
 use Drupal\Core\Breadcrumb\Breadcrumb;
 use Drupal\Core\Breadcrumb\BreadcrumbBuilderInterface;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\RouteMatchInterface;
 
-class PathAliasArgBreadcrumbBuilder implements BreadcrumbBuilderInterface {
+class AliasSubpathsBreadcrumbBuilder implements BreadcrumbBuilderInterface {
 
   /**
    * The admin context service.

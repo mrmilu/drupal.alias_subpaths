@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\path_alias_arg\Cache\Context;
+namespace Drupal\alias_subpaths\Cache\Context;
 
 use Drupal\Core\Cache\CacheableMetadata;
 use Drupal\Core\Cache\Context\CacheContextInterface;
