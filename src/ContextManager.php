@@ -104,4 +104,7 @@ class ContextManager {
     $this->resolvedUrl = $resolvedUrl;
   }
 
+  public function contextBagIsEmpty(): bool  {
+    return count($this->contextBag) === 0;
+  }
 }

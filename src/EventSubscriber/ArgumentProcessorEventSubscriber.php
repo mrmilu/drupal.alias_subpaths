@@ -3,6 +3,8 @@
 namespace Drupal\alias_subpaths\EventSubscriber;
 
 use Drupal\alias_subpaths\ContextManager;
+use Drupal\alias_subpaths\Exception\InvalidArgumentException;
+use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -51,7 +53,8 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     if ($this->isSystemRoute() ||
       $this->isAdminRoute($event) ||
       $this->isFrontPage($event) ||
-      $this->isViewsRoute()
+      $this->isViewsRoute() ||
+      $this->contextManager->contextBagIsEmpty()
     ) {
       return;
     }
@@ -59,9 +62,12 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     $route_name = $this->currentRouteMatch->getRouteName();
     foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
       if ($definition['route_name'] === $route_name) {
+        /** @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface $plugin */
         $plugin = $this->argumentProcessorManager->createInstance($definition['id']);
-        if ($plugin->hasArguments()) {
-          $plugin->process();
+        try {
+          $plugin->run();
+        } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
+          throw new NotFoundHttpException();
         }
         return;
       }
