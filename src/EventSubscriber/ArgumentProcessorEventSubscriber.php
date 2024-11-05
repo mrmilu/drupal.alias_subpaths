@@ -4,10 +4,8 @@ namespace Drupal\alias_subpaths\EventSubscriber;
 
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\Core\Routing\CurrentRouteMatch;
-use Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface;
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -50,11 +48,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   public function onRequest(RequestEvent $event) {
-    if ($this->isSystemRoute()) {
+    if ($this->isSystemRoute() || $this->isAdminRoute($event)) {
       return;
     }
+    $requestedUri = $event->getRequest()->getPathInfo();
     $route_name = $this->currentRouteMatch->getRouteName();
-    $alias = $event->getRequest()->getPathInfo();
     foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
       if ($definition['route_name'] === $route_name) {
         $plugin = $this->argumentProcessorManager->createInstance($definition['id']);
@@ -64,19 +62,24 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
         return;
       }
     }
-    if ($alias !== $this->contextManager->getResolvedUrl()) {
-      //throw new NotFoundHttpException();
+    if (!$this->isFrontPage($event) && $requestedUri !== $this->contextManager->getResolvedUrl()) {
+      throw new NotFoundHttpException();
     }
   }
 
   private function isSystemRoute() {
-    $systemRoutes = [
-      'system.404',
-      'system.css_asset',
-      'system.js_asset',
-    ];
     $route_name = $this->currentRouteMatch->getRouteName();
-    return in_array($route_name, $systemRoutes);
+    return str_starts_with($route_name, "system.");
+  }
+
+  private function isFrontPage(RequestEvent $event) {
+    return $event->getRequest()->getPathInfo() === '/';
+  }
+
+  public function isAdminRoute(RequestEvent $event) {
+    $route_name = $this->currentRouteMatch->getRouteName();
+    $path = $event->getRequest()->getPathInfo();
+    return strpos($route_name, 'admin.') === 0 || strpos($path, '/admin') === 0;
   }
 
 }
