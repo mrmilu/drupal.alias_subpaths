@@ -2,11 +2,14 @@
 
 namespace Drupal\alias_subpaths\EventSubscriber;
 
+use Drupal\alias_subpaths\ContextManager;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface;
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
@@ -21,12 +24,24 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    */
   private CurrentRouteMatch $currentRouteMatch;
 
+  /**
+   * @var \Drupal\alias_subpaths\ContextManager
+   */
+  private ContextManager $contextManager;
+
+  /**
+   * @param \Drupal\alias_subpaths\Plugin\ArgumentProcessorManager $argument_processor_manager
+   * @param \Drupal\Core\Routing\CurrentRouteMatch $current_route_match
+   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   */
   public function __construct(
     ArgumentProcessorManager $argument_processor_manager,
-    CurrentRouteMatch $current_route_match
+    CurrentRouteMatch $current_route_match,
+    ContextManager $context_manager
   ) {
     $this->argumentProcessorManager = $argument_processor_manager;
     $this->currentRouteMatch = $current_route_match;
+    $this->contextManager = $context_manager;
   }
 
   public static function getSubscribedEvents() {
@@ -35,7 +50,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   public function onRequest(RequestEvent $event) {
+    if ($this->isSystemRoute()) {
+      return;
+    }
     $route_name = $this->currentRouteMatch->getRouteName();
+    $alias = $event->getRequest()->getPathInfo();
     foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
       if ($definition['route_name'] === $route_name) {
         $plugin = $this->argumentProcessorManager->createInstance($definition['id']);
@@ -45,6 +64,19 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
         return;
       }
     }
+    if ($alias !== $this->contextManager->getResolvedUrl()) {
+      //throw new NotFoundHttpException();
+    }
+  }
+
+  private function isSystemRoute() {
+    $systemRoutes = [
+      'system.404',
+      'system.css_asset',
+      'system.js_asset',
+    ];
+    $route_name = $this->currentRouteMatch->getRouteName();
+    return in_array($route_name, $systemRoutes);
   }
 
 }

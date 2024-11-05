@@ -18,12 +18,18 @@ class ContextManager {
    */
   protected $processedContextBag;
 
+  private string $requestedUrl;
+
+  private string $resolvedUrl;
+
   /**
    * Constructor for ContextManager.
    */
   public function __construct() {
     $this->contextBag = [];
     $this->processedContextBag = [];
+    $this->requestedUrl = '';
+    $this->resolvedUrl = '';
   }
 
   /**
@@ -81,4 +87,21 @@ class ContextManager {
   public function clearProcessedContextBag() {
     $this->processedContextBag = [];
   }
+
+  public function getRequestedUrl(): string {
+    return $this->requestedUrl;
+  }
+
+  public function setRequestedUrl(string $requestedUrl): void {
+    $this->requestedUrl = $requestedUrl;
+  }
+
+  public function getResolvedUrl(): string {
+    return $this->resolvedUrl;
+  }
+
+  public function setResolvedUrl(string $resolvedUrl): void {
+    $this->resolvedUrl = $resolvedUrl;
+  }
+
 }

@@ -18,6 +18,7 @@ class NodeArgumentProcessor extends ArgumentProcessorBase {
   }
 
   public function process() {
+    $args = $this->contextManager->getContextBag();
     $node = $this->currentRouteMatch->getParameter('node');
     //@TODO:
   }

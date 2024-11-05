@@ -36,18 +36,21 @@ class AliasSubpathsAliasManager extends AliasManager {
     $this->context_manager = $context_manager;
   }
 
-  public function getPathByAlias($path, $langcode = NULL) {
-    $path_parts = explode('/', trim($path, '/'));
-    while (count($path_parts) > 0) {
-      $current_path = '/' . implode('/', $path_parts);
-      $alias = parent::getPathByAlias($current_path, $langcode);
-      if ($alias !== $current_path) {
-        return $alias;
+  public function getPathByAlias($alias, $langcode = NULL) {
+    $this->context_manager->setRequestedUrl($alias);
+    $alias_parts= explode('/', trim($alias, '/'));
+    while (count($alias_parts) > 0) {
+      $current_alias = '/' . implode('/', $alias_parts);
+      $path = parent::getPathByAlias($current_alias, $langcode);
+      if ($path !== $current_alias) {
+        $this->context_manager->setResolvedUrl($current_alias);
+        return $path;
       }
-      $argument = array_pop($path_parts);
+      $argument = array_pop($alias_parts);
       $this->context_manager->addToContextBag($argument);
     }
-    return $path;
+    $this->context_manager->setResolvedUrl($alias);
+    return $alias;
   }
 
 }
