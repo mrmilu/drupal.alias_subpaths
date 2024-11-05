@@ -48,7 +48,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   public function onRequest(RequestEvent $event) {
-    if ($this->isSystemRoute() || $this->isAdminRoute($event)) {
+    if ($this->isSystemRoute() ||
+      $this->isAdminRoute($event) ||
+      $this->isFrontPage($event) ||
+      $this->isViewsRoute()
+    ) {
       return;
     }
     $requestedUri = $event->getRequest()->getPathInfo();
@@ -62,7 +66,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
         return;
       }
     }
-    if (!$this->isFrontPage($event) && $requestedUri !== $this->contextManager->getResolvedUrl()) {
+    if ($requestedUri !== $this->contextManager->getResolvedUrl()) {
       throw new NotFoundHttpException();
     }
   }
@@ -70,6 +74,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   private function isSystemRoute() {
     $route_name = $this->currentRouteMatch->getRouteName();
     return str_starts_with($route_name, "system.");
+  }
+
+  private function isViewsRoute() {
+    $route_name = $this->currentRouteMatch->getRouteName();
+    return str_starts_with($route_name, "view.");
   }
 
   private function isFrontPage(RequestEvent $event) {
