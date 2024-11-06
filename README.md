@@ -123,11 +123,11 @@ $settings['alias_subpaths__argument_resolver_handler_class'] = '\Drupal\alias_su
 $settings['alias_subpaths__allowed_arguments_types'] = [
   'entity:node:filtered_page' => [
     'entity:node:page',
+    'entity:node:article',
+    'entity:taxonomy_term:tags',
   ],
   'entity:taxonomy_term:tags' => [
     'entity:node:page',
-    'entity:node:article',
-    'entity:taxonomy_term:tags',
   ]
 ];
 
