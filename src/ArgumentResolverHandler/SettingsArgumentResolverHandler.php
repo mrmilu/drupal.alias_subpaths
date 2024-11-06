@@ -9,11 +9,11 @@ use Drupal\Core\Site\Settings;
 class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterface {
 
   public function getAllowedArgumentTypes($id) {
-    $allowed_arguments_definitions = Settings::get('alias_subpaths__allowed_arguments_definitions');
-    if (!array_key_exists($id, $allowed_arguments_definitions)) {
+    $allowed_arguments_types = Settings::get('alias_subpaths__allowed_arguments_types');
+    if (!array_key_exists($id, $allowed_arguments_types)) {
       return FALSE;
     }
-    return $allowed_arguments_definitions[$id];
+    return $allowed_arguments_types[$id];
   }
 
   public function getArgumentResolver($id): ArgumentResolverInterface {

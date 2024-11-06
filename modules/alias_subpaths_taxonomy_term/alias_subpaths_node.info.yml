@@ -1,0 +1,7 @@
+name: 'Alias Subpaths Taxonomy Term'
+type: module
+description: 'Taxonomy term argument processor alias_subpaths module.'
+core_version_requirement: ^10 || ^11
+package: Custom
+dependencies:
+  - alias_subpaths:alias_subpaths
