@@ -218,9 +218,11 @@ class TaxonomyTermTagsArgumentResolver implements ArgumentResolverInterface {
 }
 ```
 
-*IMPORTANT: Argument Resolvers should return NULL or FALSE if there is any error
+**IMPORTANT: Argument Resolvers should return NULL or FALSE if there is any error
 during argument resolve function like the entity doesn't exist. It is needed to
-show an HTTP 404 error*
+show an HTTP 404 error**
+
+---
 
 ### Usage of arguments
 
