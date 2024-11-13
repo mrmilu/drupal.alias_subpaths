@@ -203,16 +203,16 @@ use Drupal\taxonomy\Entity\Term;
 class TaxonomyTermTagsArgumentResolver implements ArgumentResolverInterface {
 
   public function resolve($value) {
-    $nids = \Drupal::entityQuery('node')
+    $tids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck()
       ->condition('vid', 'tags')
       ->condition('name', $value)
       ->range(0, 1)
       ->execute();
-    if (empty($nids)) {
+    if (empty($tids)) {
       return NULL;
     }
-    return Term::load(reset($nids));
+    return Term::load(reset($tids));
   }
 
 }
