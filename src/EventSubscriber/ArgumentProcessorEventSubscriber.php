@@ -5,6 +5,7 @@ namespace Drupal\alias_subpaths\EventSubscriber;
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -30,6 +31,13 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   private ContextManager $contextManager;
 
   /**
+   * The admin context service.
+   *
+   * @var \Drupal\Core\Routing\AdminContext
+   */
+  protected $adminContext;
+
+  /**
    * @param \Drupal\alias_subpaths\Plugin\ArgumentProcessorManager $argument_processor_manager
    * @param \Drupal\Core\Routing\CurrentRouteMatch $current_route_match
    * @param \Drupal\alias_subpaths\ContextManager $context_manager
@@ -37,11 +45,13 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   public function __construct(
     ArgumentProcessorManager $argument_processor_manager,
     CurrentRouteMatch $current_route_match,
-    ContextManager $context_manager
+    ContextManager $context_manager,
+    AdminContext $admin_context
   ) {
     $this->argumentProcessorManager = $argument_processor_manager;
     $this->currentRouteMatch = $current_route_match;
     $this->contextManager = $context_manager;
+    $this->adminContext = $admin_context;
   }
 
   public static function getSubscribedEvents() {
@@ -51,7 +61,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
 
   public function onRequest(RequestEvent $event) {
     if ($this->isSystemRoute() ||
-      $this->isAdminRoute($event) ||
+      $this->isAdminRoute() ||
       $this->isFrontPage($event) ||
       $this->isViewsRoute() ||
       $this->contextManager->contextBagIsEmpty()
@@ -91,10 +101,8 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     return $event->getRequest()->getPathInfo() === '/';
   }
 
-  public function isAdminRoute(RequestEvent $event) {
-    $route_name = $this->currentRouteMatch->getRouteName();
-    $path = $event->getRequest()->getPathInfo();
-    return strpos($route_name, 'admin.') === 0 || strpos($path, '/admin') === 0;
+  public function isAdminRoute() {
+    return $this->adminContext->isAdminRoute($this->currentRouteMatch->getRouteObject());
   }
 
 }
