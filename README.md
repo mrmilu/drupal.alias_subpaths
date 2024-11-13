@@ -87,10 +87,10 @@ implement `ArgumentResolverInterface`:
 
 ```php
 $settings['alias_subpaths__argument_resolver_class'] = [
-  'argument_type_1' => '\Drupal\my_project\Plugin\ArgumentResolver\ArgumentType1Resolver',
-  'argument_type_2' => '\Drupal\my_project\Plugin\ArgumentResolver\ArgumentType2Resolver',
+  'argument_type_1' => '\Drupal\my_project\ArgumentResolver\ArgumentType1Resolver',
+  'argument_type_2' => '\Drupal\my_project\ArgumentResolver\ArgumentType2Resolver',
   //...
-  'argument_type_3' => '\Drupal\my_project\Plugin\ArgumentResolver\ArgumentTypeNResolver',
+  'argument_type_3' => '\Drupal\my_project\ArgumentResolver\ArgumentTypeNResolver',
 ];
 ```
 
@@ -133,9 +133,9 @@ $settings['alias_subpaths__allowed_arguments_types'] = [
 
 // Set the resolver classes for each argument type
 $settings['alias_subpaths__argument_resolver_class'] = [
-  'entity:node:page' => '\Drupal\my_project\Plugin\ArgumentResolver\NodePageArgumentResolver',
-  'entity:node:article' => '\Drupal\my_project\Plugin\ArgumentResolver\NodeArticleArgumentResolver',
-  'entity:taxonomy_term:tags' => '\Drupal\my_project\Plugin\ArgumentResolver\TaxonomyTermTagsArgumentResolver',
+  'entity:node:page' => '\Drupal\my_project\ArgumentResolver\NodePageArgumentResolver',
+  'entity:node:article' => '\Drupal\my_project\ArgumentResolver\NodeArticleArgumentResolver',
+  'entity:taxonomy_term:tags' => '\Drupal\my_project\ArgumentResolver\TaxonomyTermTagsArgumentResolver',
 ];
 ```
 
@@ -145,7 +145,7 @@ custom logic. For this example all of them are into a custom module called
 
 - Node of type Page: search by field called field_url_key
 ```php
-namespace Drupal\my_project\Plugin\ArgumentResolver;
+namespace Drupal\my_project\ArgumentResolver;
 
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\node\Entity\Node;
@@ -170,7 +170,7 @@ class NodePageArgumentResolver implements ArgumentResolverInterface {
 
 - Node of type Article: search by node title
 ```php
-namespace Drupal\my_project\Plugin\ArgumentResolver;
+namespace Drupal\my_project\ArgumentResolver;
 
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\node\Entity\Node;
@@ -195,7 +195,7 @@ class NodeArticleArgumentResolver implements ArgumentResolverInterface {
 
 - Taxonomy term of vocabulary tags: search by taxonomy name
 ```php
-namespace Drupal\my_project\Plugin\ArgumentResolver;
+namespace Drupal\my_project\ArgumentResolver;
 
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\taxonomy\Entity\Term;
