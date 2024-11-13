@@ -19,6 +19,6 @@ services:
     parent: default_plugin_manager
   alias_subpaths.argument_processor_subscriber:
     class: Drupal\alias_subpaths\EventSubscriber\ArgumentProcessorEventSubscriber
-    arguments: ['@plugin.manager.argument_processor', '@current_route_match', '@alias_subpaths.context_manager']
+    arguments: ['@plugin.manager.argument_processor', '@current_route_match', '@alias_subpaths.context_manager', '@router.admin_context']
     tags:
       - { name: event_subscriber }
