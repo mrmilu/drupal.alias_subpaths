@@ -24,7 +24,7 @@ class AliasSubpathsBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    * {@inheritdoc}
    */
   public function applies(RouteMatchInterface $route_match) {
-    return !$this->adminContext->isAdminRoute($route_match->getRouteObject());
+    return $route_match->getRouteObject()->getOption('_alias_subpaths_route');
   }
 
   /**
@@ -32,6 +32,7 @@ class AliasSubpathsBreadcrumbBuilder implements BreadcrumbBuilderInterface {
    */
   public function build(RouteMatchInterface $route_match) {
     $breadcrumb = new Breadcrumb();
+    //TODO: Build breadcrumb for routes with alias subpaths.
     return $breadcrumb;
   }
 
