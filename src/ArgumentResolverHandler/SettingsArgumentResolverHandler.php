@@ -22,6 +22,9 @@ class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterfac
       return new DefaultArgumentResolver();
     }
     $resolver_class = $argument_resolver_classes[$id];
+    if (method_exists($resolver_class, 'create')) {
+      return $resolver_class::create(\Drupal::getContainer());
+    }
     return new $resolver_class();
   }
 
