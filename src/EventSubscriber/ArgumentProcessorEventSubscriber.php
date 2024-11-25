@@ -64,12 +64,14 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
       $this->isAdminRoute() ||
       $this->isFrontPage($event) ||
       $this->isViewsRoute() ||
+      $this->isMediaLibraryRoute() ||
       $this->contextManager->contextBagIsEmpty()
     ) {
       return;
     }
     $requestedUri = $event->getRequest()->getPathInfo();
     $route_name = $this->currentRouteMatch->getRouteName();
+
     // Add new parameter to current route to determine if the route is a route that we are validating with this module.
     $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
 
@@ -106,6 +108,17 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
 
   public function isAdminRoute() {
     return $this->adminContext->isAdminRoute($this->currentRouteMatch->getRouteObject());
+  }
+
+  /**
+   * Check if we are in a media library rout, this is a special case because the
+   * media library it uses a custom route that does not belong to admin routes.
+   *
+   * @return bool
+   */
+  public function isMediaLibraryRoute(){
+    $route_object = $this->currentRouteMatch->getRouteObject();
+    return str_starts_with($route_object->getPath(), '/media-library');
   }
 
 }
