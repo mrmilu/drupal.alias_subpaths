@@ -72,6 +72,9 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     $requestedUri = $event->getRequest()->getPathInfo();
     $route_name = $this->currentRouteMatch->getRouteName();
 
+    // Add new parameter to current route to determine if the route is a route that we are validating with this module.
+    $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
+
     foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
       if ($definition['route_name'] === $route_name) {
         /** @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface $plugin */
