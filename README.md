@@ -13,6 +13,23 @@ the processed arguments, and it is available to use it anywhere.
 \Drupal::service('alias_subpaths.context_manager')->getProcessedContextBag();
 ```
 
+## Installation
+To install this module as mrmilu module inside `modules/mrmilu` folder following composer commands should be executed:
+<ul>
+<li>Tell composer.json project file where the module repository is located</li>
+
+```shell
+composer config repositories.alias_subpaths vcs git@github.com:mrmilu/drupal.alias_subpaths.git
+```
+
+<li>Install as other contrib modules</li>
+
+```shell
+composer require mrmilu/alias_subpaths
+```
+</ul>
+
+
 ## Usage
 
 There is an example into `alias_subpath_node` submodule that enable argument
