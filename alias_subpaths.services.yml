@@ -23,8 +23,11 @@ services:
     arguments: ['@current_route_match', '@alias_subpaths.context_manager', '@router.admin_context']
     tags:
       - { name: event_subscriber }
+  alias_subpaths.url_resolver:
+    class: '\Drupal\alias_subpaths\AliasSubpathsUrlResolver'
+    arguments: ['@path_alias.manager', '@alias_subpaths.context_manager']
   alias_subpaths.path_processor:
     class: Drupal\alias_subpaths\PathProcessor\PathProcessorAliasSubpaths
     tags:
       - { name: path_processor_inbound, priority: 90 }
-    arguments: ['@path_alias.manager', '@alias_subpaths.context_manager']
+    arguments: ['@alias_subpaths.url_resolver']

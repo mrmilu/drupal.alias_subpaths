@@ -1,0 +1,6 @@
+services:
+  alias_subpaths.path_translator.subscriber:
+    class: Drupal\alias_subpaths_decoupled_router\EventSubscriber\AliasSubpathsPathTranslatorSubscriber
+    tags:
+      - { name: event_subscriber }
+    arguments: ['@alias_subpaths.url_resolver', '@router.no_access_checks', '@alias_subpaths.context_manager']

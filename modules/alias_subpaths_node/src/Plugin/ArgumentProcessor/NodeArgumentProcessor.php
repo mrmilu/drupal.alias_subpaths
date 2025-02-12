@@ -15,6 +15,7 @@ class NodeArgumentProcessor extends ArgumentProcessorBase {
 
   protected function getId() {
     return 'entity:node:' . $this->currentRouteMatch->getParameter('node')->bundle();
+    // return 'entity:node:filtered_page'; @TODO: work on this for decoupled router
   }
 
 }

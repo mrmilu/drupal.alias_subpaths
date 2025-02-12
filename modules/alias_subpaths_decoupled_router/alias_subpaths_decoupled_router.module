@@ -1,0 +1,36 @@
+<?php
+
+use Drupal\Core\Entity\EntityInterface;
+
+function alias_subpaths_decoupled_router_decoupled_router_info_alter(&$output, $context) {
+  $output['alias_subpaths_context'] = [];
+
+  $path = \Drupal::request()->query->get('path');
+  if (!$path) {
+    return;
+  }
+  /** @var \Drupal\alias_subpaths\ContextManager $service */
+  $service = \Drupal::service('alias_subpaths.context_manager');
+  if ($service->isEmpty($path)) {
+    return;
+  }
+
+  $arguments = $service->getContextBag($path)->getProcessedContent();
+
+  foreach ($arguments as $input => $argument) {
+    if ($argument instanceof EntityInterface) {
+      $serialized_argument = [
+        'canonical' => $argument->toUrl('canonical', ['absolute' => TRUE])->toString(),
+        'type' => $argument->getEntityTypeId(),
+        'bundle' => $argument->bundle(),
+        'id' => $argument->id(),
+        'uuid' => $argument->uuid(),
+      ];
+    } else {
+      $serialized_argument = [
+        json_encode($argument), // @TODO: work on this response
+      ];
+    }
+    $output['alias_subpaths_context'][$input] = $serialized_argument;
+  }
+}

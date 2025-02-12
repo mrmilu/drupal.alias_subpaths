@@ -77,4 +77,8 @@ class ContextBag {
     return $this->rawContent;
   }
 
+  public function getProcessedContent() {
+    return $this->processedContent;
+  }
+
 }
