@@ -62,7 +62,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
       return;
     }
 
-    $requestedUri = $event->getRequest()->getPathInfo();
+    $requestedUri = urldecode($event->getRequest()->getPathInfo());
     if ($this->contextManager->isEmpty($requestedUri)) {
       return;
     }
