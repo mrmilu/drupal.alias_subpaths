@@ -3,6 +3,7 @@
 namespace Drupal\alias_subpaths\Plugin;
 
 use Drupal\alias_subpaths\ArgumentResolverHandler\ArgumentResolverHandlerInterface;
+use Drupal\alias_subpaths\ContextBag;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -67,13 +68,13 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     return $this->handler->getAllowedArgumentTypes($this->getId());
   }
 
-  public function run() {
+  public function run(ContextBag $contextBag) {
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
       throw new NotAllowedArgumentsException();
     }
-    foreach ($this->contextManager->getContextBag() as $idx => $context_argument) {
+    foreach ($contextBag->getRawContent() as $idx => $context_argument) {
       $processed_argument = $this->process($context_argument, $allowed_argument_types);
-      $this->contextManager->addToProcessedContextBag($idx, $processed_argument);
+      $contextBag->addProcessed($idx, $processed_argument);
     }
   }
 
