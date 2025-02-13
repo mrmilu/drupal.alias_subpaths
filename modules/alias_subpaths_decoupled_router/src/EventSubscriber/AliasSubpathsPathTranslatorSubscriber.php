@@ -48,7 +48,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
   }
 
   public static function getSubscribedEvents() {
-    $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
+      $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
     return $events;
   }
 
@@ -72,8 +72,6 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     try {
       $this->contextManager->processContextBag($path, $route_name);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
-
-      // Assume a 404 from start.
       $event->getResponse()->setData([
         'message' => t(
           'Unable to resolve path @path.',
