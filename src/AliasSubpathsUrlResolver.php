@@ -42,7 +42,7 @@ class AliasSubpathsUrlResolver {
       $argument = array_pop($path_parts);
       $this->contextManager->getContextBag($path)->add($argument);
     }
-
+    // @TODO: delete contextBag?
     return $path;
   }
 

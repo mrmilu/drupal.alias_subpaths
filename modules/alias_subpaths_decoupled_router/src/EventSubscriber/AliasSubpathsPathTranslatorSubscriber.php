@@ -9,6 +9,7 @@ use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 use Symfony\Component\Routing\Exception\NoConfigurationException;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
@@ -58,18 +59,21 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     $internal_path = $this->aliasSubpathsUrlResolver->resolveUrl($path);
     try {
       $route_parameters = $this->router->match($internal_path);
-    } catch (NotAllowedArgumentsException|NoConfigurationException|ResourceNotFoundException $e) {
+    } catch (MethodNotAllowedException|NoConfigurationException|ResourceNotFoundException $e) {
       return;
     }
 
-    if (!empty($route_parameters['_route'])) {
-      $route_name = $route_parameters['_route'];
-      try {
-        $this->contextManager->processContextBag($path, $route_name);
-      } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
-        throw new NotFoundHttpException(); // @TODO: Manage 404
-      }
+    if (empty($route_parameters['_route'])) {
+      return;
     }
+
+    $route_name = $route_parameters['_route'];
+    try {
+      $this->contextManager->processContextBag($path, $route_name);
+    } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
+      throw new NotFoundHttpException(); // @TODO: Manage 404
+    }
+
   }
 
 }

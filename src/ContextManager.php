@@ -9,7 +9,7 @@ class ContextManager {
    *
    * @var array
    */
-  protected $contextBag;
+  protected array $contextBag;
 
   /**
    * @var \Drupal\alias_subpaths\ContextBagFactory
