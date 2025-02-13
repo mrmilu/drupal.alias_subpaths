@@ -6,6 +6,7 @@ use Drupal\alias_subpaths\AliasSubpathsUrlResolver;
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -71,7 +72,19 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     try {
       $this->contextManager->processContextBag($path, $route_name);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
-      throw new NotFoundHttpException(); // @TODO: Manage 404
+
+      // Assume a 404 from start.
+      $event->getResponse()->setData([
+        'message' => t(
+          'Unable to resolve path @path.',
+          ['@path' => $path]
+        ),
+        'details' => t(
+          'None of the available methods were able to find a match for this path.'
+        ),
+      ]);
+      $event->getResponse()->setStatusCode(404);
+      $event->stopPropagation();
     }
 
   }

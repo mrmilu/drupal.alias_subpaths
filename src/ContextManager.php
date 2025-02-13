@@ -34,6 +34,9 @@ class ContextManager {
    *   The initialized ContextBag.
    */
   public function initContextBag($key): ContextBag {
+    if (array_key_exists($key, $this->contextBag)) {
+      return $this->contextBag[$key];
+    }
     $this->contextBag[$key] = $this->contextBagFactory->create();
     return $this->contextBag[$key];
   }
