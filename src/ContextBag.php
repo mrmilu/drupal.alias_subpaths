@@ -47,7 +47,7 @@ class ContextBag {
   }
 
   public function add($raw_content): void {
-    $this->params[] = new ContextParam($raw_content);
+    $this->params[$raw_content] = new ContextParam($raw_content);
   }
 
   public function addProcessed($key, $processed_content): void {
