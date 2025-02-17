@@ -65,7 +65,7 @@ class ContextBag {
         /** @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface $plugin */
         $plugin = $this->argumentProcessorManager->createInstance($definition['id']);
         $plugin->run($this);
-        return $this->processedContent;
+        return $this->generateProcessedContent();
       }
     }
     return [];
@@ -86,6 +86,34 @@ class ContextBag {
   }
 
   public function getProcessedContent() {
+    return $this->processedContent;
+  }
+
+  public function getProcessedValue($param) {
+    if (array_key_exists($param, $this->processedContent)) {
+      return $this->processedContent[$param];
+    }
+    return NULL;
+  }
+
+  private function generateProcessedContent(): array {
+    $processedContent = array_reduce($this->params, function (array $processedContent, $param): array {
+      $key = $param->getParamName();
+      if ($key === NULL) {
+        return $processedContent;
+      }
+      $value = $param->getProcessedValue();
+      if (!array_key_exists($key, $processedContent)) {
+        $processedContent[$key] = $value;
+      } else {
+        $processedContent[$key] = is_array($processedContent[$key])
+          ? array_merge($processedContent[$key], [$value])
+          : [$processedContent[$key], $value];
+      }
+
+      return $processedContent;
+    }, []);
+    $this->processedContent = $processedContent;
     return $this->processedContent;
   }
 

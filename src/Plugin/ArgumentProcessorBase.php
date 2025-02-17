@@ -4,6 +4,7 @@ namespace Drupal\alias_subpaths\Plugin;
 
 use Drupal\alias_subpaths\ArgumentResolverHandler\ArgumentResolverHandlerInterface;
 use Drupal\alias_subpaths\ContextBag;
+use Drupal\alias_subpaths\ContextParam;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -54,15 +55,16 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     );
   }
 
-  public function process($context_argument, $allowed_argument_types) {
+  public function process(ContextParam $context_argument, $allowed_argument_types) {
     foreach ($allowed_argument_types as $argument_type) {
       $argument_resolver =  $this->handler->getArgumentResolver($argument_type);
-      if (!$argument_resolver->resolve($context_argument)) {
+      $raw_value = $context_argument->getRawValue();
+      if (!$argument_resolver->resolve($raw_value)) {
         continue;
       }
-      return [
-        $argument_resolver->getParamName() => $argument_resolver->getProcessedValue($context_argument)
-      ];
+      $context_argument->setParamName($argument_resolver->getParamName());
+      $context_argument->setProcessedValue($argument_resolver->getProcessedValue($raw_value));
+      return TRUE;
     }
     throw new InvalidArgumentException();
   }
@@ -77,9 +79,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     }
 
     foreach ($contextBag->getParams() as $idx => $context_argument) {
-      $processed_argument = $this->process($context_argument->getRawValue(), $allowed_argument_types);
-
-      $contextBag->addProcessed($idx, $processed_argument);
+      $this->process($context_argument, $allowed_argument_types);
     }
   }
 
