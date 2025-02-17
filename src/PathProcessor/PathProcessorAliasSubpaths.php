@@ -30,6 +30,9 @@ class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
    */
   public function processInbound($path, Request $request) {
     return $this->aliasSubpathsAliasManager->resolveUrl($path);
+
+    //$pathData = $this->aliasSubpathsManager->resolve($path);
+    //return $pathData['path'];
   }
 
 }

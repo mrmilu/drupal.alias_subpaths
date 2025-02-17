@@ -14,8 +14,7 @@ use Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor;
 class NodeArgumentProcessor extends ArgumentProcessorBase {
 
   protected function getId() {
-    //return 'entity:node:' . $this->currentRouteMatch->getParameter('node')->bundle();
-    return 'entity:node:filtered_page'; // @TODO: work on this for decoupled router
+    return 'entity:node:' . $this->contextBag->getRouteInfo()['arguments'][0]->bundle();
   }
 
 }

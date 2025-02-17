@@ -28,6 +28,11 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
 
   protected ArgumentResolverHandlerInterface $handler;
 
+  /**
+   * @var \Drupal\alias_subpaths\ContextBag|mixed
+   */
+  protected ContextBag $contextBag;
+
   public function __construct(
     array $configuration,
     $plugin_id,
@@ -40,6 +45,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     $this->currentRouteMatch = $current_route_match;
     $handlerClass = $this->getHandlerClass();
     $this->handler = new $handlerClass();
+    $this->contextBag = $configuration['context_bag'];
   }
 
   /**
