@@ -8,6 +8,11 @@ use Drupal\Core\Site\Settings;
 
 class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterface {
 
+  public function routeAllowArguments($id) {
+    $allowed_arguments_types = Settings::get('alias_subpaths__allowed_arguments_types');
+    return array_key_exists($id, $allowed_arguments_types);
+  }
+
   public function getAllowedArgumentTypes($id) {
     $allowed_arguments_types = Settings::get('alias_subpaths__allowed_arguments_types');
     if (!array_key_exists($id, $allowed_arguments_types)) {

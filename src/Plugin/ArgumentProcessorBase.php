@@ -80,6 +80,9 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
   }
 
   public function run(ContextBag $contextBag) {
+    if (!$this->routeAllowArguments()) {
+      return;
+    }
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
       throw new NotAllowedArgumentsException();
     }
@@ -101,6 +104,10 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
 
   protected function getId() {
     return $this->getPluginId();
+  }
+
+  private function routeAllowArguments() {
+    return $this->handler->routeAllowArguments($this->getId());
   }
 
 }
