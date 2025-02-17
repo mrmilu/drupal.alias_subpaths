@@ -4,7 +4,7 @@ namespace Drupal\alias_subpaths;
 
 use Drupal\path_alias\AliasManagerInterface;
 
-class AliasSubpathsUrlResolver {
+class AliasSubpathsAliasManager {
 
   /**
    * An alias manager for looking up the system path.
@@ -30,20 +30,25 @@ class AliasSubpathsUrlResolver {
   }
 
   public function resolveUrl($path) {
-    $this->contextManager->initContextBag($path);
+    $contextBag = $this->contextManager->getContextBag($path);
+    if ($contextBag->getPath()) {
+      return $contextBag->getPath();
+    }
+
     $path_parts = explode('/', trim($path, '/'));
 
     while (count($path_parts) > 0) {
       $current_alias = '/' . implode('/', $path_parts);
       $current_path = $this->aliasManager->getPathByAlias($current_alias);
       if ($current_path !== $current_alias) {
+        $contextBag->setPath($current_alias);
         return $current_path;
       }
       $argument = array_pop($path_parts);
-      $this->contextManager->getContextBag($path)->add($argument);
+      $contextBag->add($argument);
     }
-    // @TODO: delete contextBag?
-    return $path;
+
+    return $contextBag->setPath($path);
   }
 
 }

@@ -57,9 +57,12 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
   public function process($context_argument, $allowed_argument_types) {
     foreach ($allowed_argument_types as $argument_type) {
       $argument_resolver =  $this->handler->getArgumentResolver($argument_type);
-      if ($processed_argument = $argument_resolver->resolve($context_argument)) {
-        return $processed_argument;
+      if (!$argument_resolver->resolve($context_argument)) {
+        continue;
       }
+      return [
+        $argument_resolver->getParamName() => $argument_resolver->getProcessedValue($context_argument)
+      ];
     }
     throw new InvalidArgumentException();
   }
@@ -72,8 +75,10 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
       throw new NotAllowedArgumentsException();
     }
-    foreach ($contextBag->getRawContent() as $idx => $context_argument) {
-      $processed_argument = $this->process($context_argument, $allowed_argument_types);
+
+    foreach ($contextBag->getParams() as $idx => $context_argument) {
+      $processed_argument = $this->process($context_argument->getRawValue(), $allowed_argument_types);
+
       $contextBag->addProcessed($idx, $processed_argument);
     }
   }

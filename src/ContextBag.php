@@ -9,9 +9,9 @@ class ContextBag {
   /**
    * Array to hold the raw content.
    *
-   * @var array
+   * @var \Drupal\alias_subpaths\ContextParam[]
    */
-  protected array $rawContent;
+  protected array $params;
 
   /**
    * Array to hold the processed content.
@@ -26,6 +26,15 @@ class ContextBag {
   private ArgumentProcessorManager $argumentProcessorManager;
 
   /**
+   * Internal drupal path of route
+   *
+   * @var string|null
+   */
+  private ?string $path = NULL;
+
+  private ?array $routeInfo = NULL;
+
+  /**
    * Constructs a new ContextBagFactory object.
    *
    * @param \Drupal\alias_subpaths\Plugin\ArgumentProcessorManager $argumentProcessorManager
@@ -34,11 +43,11 @@ class ContextBag {
   public function __construct(ArgumentProcessorManager $argumentProcessorManager) {
     $this->argumentProcessorManager = $argumentProcessorManager;
     $this->processedContent = [];
-    $this->rawContent = [];
+    $this->params = [];
   }
 
   public function add($raw_content): void {
-    $this->rawContent[] = $raw_content;
+    $this->params[] = new ContextParam($raw_content);
   }
 
   public function addProcessed($key, $processed_content): void {
@@ -46,12 +55,11 @@ class ContextBag {
   }
 
   /**
-   * @param $route_name
-   *
    * @return array
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function process($route_name): array {
+  public function process(): array {
+    $route_name = $this->routeInfo['name'];
     foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
       if ($definition['route_name'] === $route_name) {
         /** @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface $plugin */
@@ -67,18 +75,43 @@ class ContextBag {
    * @return bool
    */
   public function isEmpty(): bool {
-    return empty($this->rawContent);
+    return empty($this->params);
   }
 
   /**
-   * @return array
+   * @return \Drupal\alias_subpaths\ContextParam[]
    */
-  public function getRawContent(): array {
-    return $this->rawContent;
+  public function getParams(): array {
+    return $this->params;
   }
 
   public function getProcessedContent() {
     return $this->processedContent;
+  }
+
+  /**
+   * @return string|null
+   */
+  public function getPath(): ?string {
+    return $this->path;
+  }
+
+  /**
+   * @param string $alias
+   *
+   * @return string
+   */
+  public function setPath(string $alias): string {
+    $this->path = $alias;
+    return $this->path;
+  }
+
+  public function getRouteInfo(): ?array {
+    return $this->routeInfo;
+  }
+  public function setRouteInfo(array $route_info): ?array {
+    $this->routeInfo = $route_info;
+    return $this->routeInfo;
   }
 
 }

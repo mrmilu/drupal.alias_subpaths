@@ -2,7 +2,7 @@
 
 namespace Drupal\alias_subpaths\PathProcessor;
 
-use Drupal\alias_subpaths\AliasSubpathsUrlResolver;
+use Drupal\alias_subpaths\AliasSubpathsAliasManager;
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Drupal\path_alias\AliasManagerInterface;
@@ -14,22 +14,22 @@ use Symfony\Component\HttpFoundation\Request;
 class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
 
   /**
-   * @var \Drupal\alias_subpaths\AliasSubpathsUrlResolver
+   * @var \Drupal\alias_subpaths\AliasSubpathsAliasManager
    */
-  private AliasSubpathsUrlResolver $aliasSubpathsUrlResolver;
+  private AliasSubpathsAliasManager $aliasSubpathsAliasManager;
 
   /**
-   * @param \Drupal\alias_subpaths\AliasSubpathsUrlResolver $alias_subpaths_url_resolver
+   * @param \Drupal\alias_subpaths\AliasSubpathsAliasManager $alias_subpaths_url_resolver
    */
-  public function __construct(AliasSubpathsUrlResolver $alias_subpaths_url_resolver) {
-    $this->aliasSubpathsUrlResolver = $alias_subpaths_url_resolver;
+  public function __construct(AliasSubpathsAliasManager $alias_subpaths_url_resolver) {
+    $this->aliasSubpathsAliasManager = $alias_subpaths_url_resolver;
   }
 
   /**
    * {@inheritdoc}
    */
   public function processInbound($path, Request $request) {
-    return $this->aliasSubpathsUrlResolver->resolveUrl($path);
+    return $this->aliasSubpathsAliasManager->resolveUrl($path);
   }
 
 }

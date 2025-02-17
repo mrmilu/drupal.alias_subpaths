@@ -62,8 +62,8 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
       return;
     }
 
-    $requestedUri = urldecode($event->getRequest()->getPathInfo());
-    if ($this->contextManager->isEmpty($requestedUri)) {
+    $requested_uri = urldecode($event->getRequest()->getPathInfo());
+    if ($this->contextManager->isEmpty($requested_uri)) {
       return;
     }
     $route_name = $this->currentRouteMatch->getRouteName();
@@ -72,7 +72,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
 
     try {
-      $this->contextManager->processContextBag($requestedUri, $route_name);
+      $this->contextManager->processContextBag($requested_uri, $route_name);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
       throw new NotFoundHttpException();
     }
