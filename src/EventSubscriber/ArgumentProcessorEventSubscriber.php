@@ -2,6 +2,7 @@
 
 namespace Drupal\alias_subpaths\EventSubscriber;
 
+use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
@@ -34,17 +35,23 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   protected $adminContext;
 
   /**
+   * @var \Drupal\alias_subpaths\AliasSubpathsManager
+   */
+  private AliasSubpathsManager $aliasSubpathsManager;
+
+  /**
    * @param \Drupal\Core\Routing\CurrentRouteMatch $current_route_match
-   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
+   * @param \Drupal\Core\Routing\AdminContext $admin_context
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
-    ContextManager $context_manager,
+    AliasSubpathsManager $alias_subpaths_manager,
     AdminContext $admin_context
   ) {
     $this->currentRouteMatch = $current_route_match;
-    $this->contextManager = $context_manager;
     $this->adminContext = $admin_context;
+    $this->aliasSubpathsManager = $alias_subpaths_manager;
   }
 
   public static function getSubscribedEvents() {
@@ -63,16 +70,12 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     }
 
     $requested_uri = urldecode($event->getRequest()->getPathInfo());
-    if ($this->contextManager->isEmpty($requested_uri)) {
-      return;
-    }
-    $route_name = $this->currentRouteMatch->getRouteName();
 
     // Add new parameter to current route to determine if the route is a route that we are validating with this module.
     $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
 
     try {
-      $this->contextManager->processContextBag($requested_uri);
+      $this->aliasSubpathsManager->resolve($requested_uri);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
       throw new NotFoundHttpException();
     }

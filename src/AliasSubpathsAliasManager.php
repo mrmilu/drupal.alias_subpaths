@@ -41,7 +41,7 @@ class AliasSubpathsAliasManager {
       $current_alias = '/' . implode('/', $path_parts);
       $current_path = $this->aliasManager->getPathByAlias($current_alias);
       if ($current_path !== $current_alias) {
-        $contextBag->setPath($current_alias);
+        $contextBag->setPath($current_path);
         return $current_path;
       }
       $argument = array_pop($path_parts);

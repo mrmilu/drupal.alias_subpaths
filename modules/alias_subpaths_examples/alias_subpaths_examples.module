@@ -10,7 +10,7 @@ function alias_subpaths_examples_preprocess_node(array &$variables) {
     $request = \Drupal::service('request_stack')->getCurrentRequest();
 
     /** @var \Drupal\alias_subpaths\ContextManager $contextManager */
-    $contextManager = \Drupal::service('alias_subpaths_context.context_manager');
+    $contextManager = \Drupal::service('alias_subpaths.context_manager');
     $variables['alias_subpaths_arguments'] = $contextManager->getContextBag($request->getPathInfo())->getProcessedContent();
   }
 }
