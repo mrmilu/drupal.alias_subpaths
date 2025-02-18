@@ -3,6 +3,7 @@
 namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 
 use Drupal\alias_subpaths\AliasSubpathsAliasManager;
+use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
@@ -18,33 +19,17 @@ use Symfony\Component\Routing\RouterInterface;
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
 
   /**
-   * @var \Drupal\alias_subpaths\AliasSubpathsAliasManager
+   * @var \Drupal\alias_subpaths\AliasSubpathsManager
    */
-  private AliasSubpathsAliasManager $aliasSubpathsAliasManager;
+  private AliasSubpathsManager $aliasSubpathsManager;
 
   /**
-   * @var \Symfony\Component\Routing\RouterInterface
-   */
-  private RouterInterface $router;
-
-  /**
-   * @var \Drupal\alias_subpaths\ContextManager
-   */
-  private ContextManager $contextManager;
-
-  /**
-   * @param \Drupal\alias_subpaths\AliasSubpathsAliasManager $alias_subpaths_url_resolver
-   * @param \Symfony\Component\Routing\RouterInterface $router
-   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
    */
   public function __construct(
-    AliasSubpathsAliasManager $alias_subpaths_url_resolver,
-    RouterInterface $router,
-    ContextManager $context_manager
+    AliasSubpathsManager $alias_subpaths_manager,
   ) {
-    $this->aliasSubpathsAliasManager = $alias_subpaths_url_resolver;
-    $this->router = $router;
-    $this->contextManager = $context_manager;
+    $this->aliasSubpathsManager = $alias_subpaths_manager;
   }
 
   public static function getSubscribedEvents() {
@@ -57,20 +42,8 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
    */
   public function onPathTranslation(PathTranslatorEvent $event) {
     $path = $event->getPath();
-    $internal_path = $this->aliasSubpathsAliasManager->resolveUrl($path);
     try {
-      $route_parameters = $this->router->match($internal_path);
-    } catch (MethodNotAllowedException|NoConfigurationException|ResourceNotFoundException $e) {
-      return;
-    }
-
-    if (empty($route_parameters['_route'])) {
-      return;
-    }
-
-    $route_name = $route_parameters['_route'];
-    try {
-      $this->contextManager->processContextBag($path);
+      $this->aliasSubpathsManager->resolve($path);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
       $event->getResponse()->setData([
         'message' => t(
