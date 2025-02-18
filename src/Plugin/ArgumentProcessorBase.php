@@ -79,7 +79,9 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     return $this->handler->getAllowedArgumentTypes($this->getId());
   }
 
-  public function run(ContextBag $contextBag) {
+  public function run() {
+
+    // @TODO: throw 404 if there are arguments and route doesn't allow it
     if (!$this->routeAllowArguments()) {
       return;
     }
@@ -87,7 +89,8 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
       throw new NotAllowedArgumentsException();
     }
 
-    foreach ($contextBag->getParams() as $idx => $context_argument) {
+
+    foreach ($this->contextBag->getParams() as $context_argument) {
       $this->process($context_argument, $allowed_argument_types);
     }
   }

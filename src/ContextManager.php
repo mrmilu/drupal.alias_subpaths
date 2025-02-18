@@ -44,7 +44,7 @@ class ContextManager {
    * @return array
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function processContextBag($key, $route_name): array {
+  public function processContextBag($key): array {
     return $this->getContextBag($key)->process();
   }
 

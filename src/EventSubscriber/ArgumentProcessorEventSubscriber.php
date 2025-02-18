@@ -72,7 +72,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
 
     try {
-      $this->contextManager->processContextBag($requested_uri, $route_name);
+      $this->contextManager->processContextBag($requested_uri);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
       throw new NotFoundHttpException();
     }

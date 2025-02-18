@@ -56,7 +56,7 @@ class AliasSubpathsManager implements ContainerInjectionInterface {
   public function resolve($path): array {
     $internal_path = $this->aliasSubpathsAliasManager->resolveUrl($path);
     $routeInfo = $this->getRouteInfo($path, $internal_path);
-    $this->contextManager->processContextBag($path, $routeInfo['name']);
+    $this->contextManager->processContextBag($path);
 
     return [
       'requested_path' => $path,

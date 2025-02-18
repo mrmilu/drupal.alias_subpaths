@@ -64,7 +64,7 @@ class ContextBag {
       if ($definition['route_name'] === $route_name) {
         /** @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorInterface $plugin */
         $plugin = $this->argumentProcessorManager->createInstance($definition['id'], ['context_bag' => $this]);
-        $plugin->run($this);
+        $plugin->run();
         return $this->generateProcessedContent();
       }
     }

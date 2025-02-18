@@ -70,7 +70,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
 
     $route_name = $route_parameters['_route'];
     try {
-      $this->contextManager->processContextBag($path, $route_name);
+      $this->contextManager->processContextBag($path);
     } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
       $event->getResponse()->setData([
         'message' => t(
