@@ -14,7 +14,7 @@ use Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor;
 class NodeArgumentProcessor extends ArgumentProcessorBase {
 
   /**
-   *
+   * {@inheritDoc}
    */
   protected function getId() {
     return 'entity:node:' . $this->contextBag->getRouteInfo()['arguments'][0]->bundle();

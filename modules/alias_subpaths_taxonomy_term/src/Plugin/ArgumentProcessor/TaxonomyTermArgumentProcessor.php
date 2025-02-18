@@ -14,7 +14,7 @@ use Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor;
 class TaxonomyTermArgumentProcessor extends ArgumentProcessorBase {
 
   /**
-   *
+   * {@inheritDoc}
    */
   protected function getId() {
     return 'entity:taxonomy_term:' . $this->contextBag->getRouteInfo()['arguments'][0]->bundle();

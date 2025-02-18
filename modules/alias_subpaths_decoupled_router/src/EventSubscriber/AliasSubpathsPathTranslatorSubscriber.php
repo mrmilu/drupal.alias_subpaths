@@ -9,17 +9,22 @@ use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- *
+ * Provides a Subscriber for PathTranslator::TRANSLATE event.
  */
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
 
   /**
+   * AliasSubpathsManager service.
+   *
    * @var \Drupal\alias_subpaths\AliasSubpathsManager
    */
   private AliasSubpathsManager $aliasSubpathsManager;
 
   /**
+   * Constructs a new AliasSubpathsPathTranslatorSubscriber.
+   *
    * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
+   *   The AliasSubpathsManager parameter.
    */
   public function __construct(
     AliasSubpathsManager $alias_subpaths_manager,
@@ -28,7 +33,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
   }
 
   /**
-   *
+   * {@inheritDoc}
    */
   public static function getSubscribedEvents() {
     $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];

@@ -2,6 +2,7 @@
 
 namespace Drupal\alias_subpaths\Plugin\Attribute;
 
+use Attribute;
 use Drupal\Component\Plugin\Attribute\Plugin;
 
 /**
