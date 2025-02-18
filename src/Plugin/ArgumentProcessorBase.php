@@ -14,6 +14,9 @@ use Drupal\alias_subpaths\ContextManager;
 use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInterface, ContainerFactoryPluginInterface {
 
   /**
@@ -38,7 +41,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     $plugin_id,
     $plugin_definition,
     ContextManager $context_manager,
-    CurrentRouteMatch $current_route_match
+    CurrentRouteMatch $current_route_match,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->contextManager = $context_manager;
@@ -61,9 +64,12 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     );
   }
 
+  /**
+   *
+   */
   public function process(ContextParam $context_argument, $allowed_argument_types) {
     foreach ($allowed_argument_types as $argument_type) {
-      $argument_resolver =  $this->handler->getArgumentResolver($argument_type);
+      $argument_resolver = $this->handler->getArgumentResolver($argument_type);
       $raw_value = $context_argument->getRawValue();
       if (!$argument_resolver->resolve($raw_value)) {
         continue;
@@ -75,20 +81,25 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     throw new InvalidArgumentException();
   }
 
+  /**
+   *
+   */
   public function getAllowedArgumentTypes() {
     return $this->handler->getAllowedArgumentTypes($this->getId());
   }
 
+  /**
+   *
+   */
   public function run() {
 
-    // @TODO: throw 404 if there are arguments and route doesn't allow it
+    // @todo throw 404 if there are arguments and route doesn't allow it
     if (!$this->routeAllowArguments()) {
       return;
     }
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
       throw new NotAllowedArgumentsException();
     }
-
 
     foreach ($this->contextBag->getParams() as $context_argument) {
       $this->process($context_argument, $allowed_argument_types);
@@ -105,10 +116,16 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     );
   }
 
+  /**
+   *
+   */
   protected function getId() {
     return $this->getPluginId();
   }
 
+  /**
+   *
+   */
   private function routeAllowArguments() {
     return $this->handler->routeAllowArguments($this->getId());
   }

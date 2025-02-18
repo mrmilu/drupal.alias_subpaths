@@ -2,6 +2,9 @@
 
 namespace Drupal\alias_subpaths;
 
+/**
+ *
+ */
 class ContextManager {
 
   /**
@@ -48,6 +51,9 @@ class ContextManager {
     return $this->getContextBag($key)->process();
   }
 
+  /**
+   *
+   */
   public function isEmpty(string $key): bool {
     return (!$this->getContextBag($key) || $this->getContextBag($key)->isEmpty());
   }

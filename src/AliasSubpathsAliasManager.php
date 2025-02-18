@@ -4,6 +4,9 @@ namespace Drupal\alias_subpaths;
 
 use Drupal\path_alias\AliasManagerInterface;
 
+/**
+ *
+ */
 class AliasSubpathsAliasManager {
 
   /**
@@ -29,6 +32,9 @@ class AliasSubpathsAliasManager {
     $this->contextManager = $context_manager;
   }
 
+  /**
+   *
+   */
   public function resolveUrl($path) {
     $contextBag = $this->contextManager->getContextBag($path);
     if ($contextBag->getPath()) {

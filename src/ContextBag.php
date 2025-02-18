@@ -4,6 +4,9 @@ namespace Drupal\alias_subpaths;
 
 use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 
+/**
+ *
+ */
 class ContextBag {
 
   /**
@@ -26,7 +29,7 @@ class ContextBag {
   private ArgumentProcessorManager $argumentProcessorManager;
 
   /**
-   * Internal drupal path of route
+   * Internal drupal path of route.
    *
    * @var string|null
    */
@@ -46,10 +49,16 @@ class ContextBag {
     $this->params = [];
   }
 
+  /**
+   *
+   */
   public function add($raw_content): void {
     $this->params[$raw_content] = new ContextParam($raw_content);
   }
 
+  /**
+   *
+   */
   public function addProcessed($key, $processed_content): void {
     $this->processedContent[$key] = $processed_content;
   }
@@ -85,10 +94,16 @@ class ContextBag {
     return $this->params;
   }
 
+  /**
+   *
+   */
   public function getProcessedContent() {
     return $this->processedContent;
   }
 
+  /**
+   *
+   */
   public function getProcessedValue($param) {
     if (array_key_exists($param, $this->processedContent)) {
       return $this->processedContent[$param];
@@ -96,6 +111,9 @@ class ContextBag {
     return NULL;
   }
 
+  /**
+   *
+   */
   private function generateProcessedContent(): array {
     $processedContent = array_reduce($this->params, function (array $processedContent, $param): array {
       $key = $param->getParamName();
@@ -105,7 +123,8 @@ class ContextBag {
       $value = $param->getProcessedValue();
       if (!array_key_exists($key, $processedContent)) {
         $processedContent[$key] = $value;
-      } else {
+      }
+      else {
         $processedContent[$key] = is_array($processedContent[$key])
           ? array_merge($processedContent[$key], [$value])
           : [$processedContent[$key], $value];
@@ -134,9 +153,16 @@ class ContextBag {
     return $this->path;
   }
 
+  /**
+   *
+   */
   public function getRouteInfo(): ?array {
     return $this->routeInfo;
   }
+
+  /**
+   *
+   */
   public function setRouteInfo(array $route_info): ?array {
     $this->routeInfo = $route_info;
     return $this->routeInfo;

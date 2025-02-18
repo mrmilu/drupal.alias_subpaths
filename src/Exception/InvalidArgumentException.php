@@ -19,7 +19,7 @@ class InvalidArgumentException extends PluginException {
    * @param \Throwable|null $previous
    *   (optional) The previous throwable used for the exception chaining.
    */
-  public function __construct($message = "Invalid argument.", $code = 0, \Throwable $previous = NULL) {
+  public function __construct($message = "Invalid argument.", $code = 0, ?\Throwable $previous = NULL) {
     parent::__construct($message, $code, $previous);
   }
 

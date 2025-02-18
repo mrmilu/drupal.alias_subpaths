@@ -2,20 +2,15 @@
 
 namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 
-use Drupal\alias_subpaths\AliasSubpathsAliasManager;
 use Drupal\alias_subpaths\AliasSubpathsManager;
-use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
-use Drupal\Core\Cache\CacheableJsonResponse;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\NoConfigurationException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\RouterInterface;
 
+/**
+ *
+ */
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
 
   /**
@@ -32,8 +27,11 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     $this->aliasSubpathsManager = $alias_subpaths_manager;
   }
 
+  /**
+   *
+   */
   public static function getSubscribedEvents() {
-      $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
+    $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
     return $events;
   }
 
@@ -44,7 +42,8 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     $path = $event->getPath();
     try {
       $this->aliasSubpathsManager->resolve($path);
-    } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
+    }
+    catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
       $event->getResponse()->setData([
         'message' => t(
           'Unable to resolve path @path.',

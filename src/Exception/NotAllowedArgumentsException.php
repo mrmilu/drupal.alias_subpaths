@@ -19,7 +19,7 @@ class NotAllowedArgumentsException extends PluginException {
    * @param \Throwable|null $previous
    *   (optional) The previous throwable used for the exception chaining.
    */
-  public function __construct($message = "Arguments are not allowed.", $code = 0, \Throwable $previous = NULL) {
+  public function __construct($message = "Arguments are not allowed.", $code = 0, ?\Throwable $previous = NULL) {
     parent::__construct($message, $code, $previous);
   }
 

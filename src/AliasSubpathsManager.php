@@ -5,6 +5,9 @@ namespace Drupal\alias_subpaths;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class AliasSubpathsManager implements ContainerInjectionInterface {
 
   /**
@@ -30,7 +33,7 @@ class AliasSubpathsManager implements ContainerInjectionInterface {
   public function __construct(
     AliasSubpathsAliasManager $aliasSubpathsAliasManager,
     ContextManager $contextManager,
-    AliasSubpathsRouterManager $aliasSubpathsRouterManager
+    AliasSubpathsRouterManager $aliasSubpathsRouterManager,
   ) {
     $this->aliasSubpathsAliasManager = $aliasSubpathsAliasManager;
     $this->contextManager = $contextManager;
@@ -62,10 +65,13 @@ class AliasSubpathsManager implements ContainerInjectionInterface {
       'requested_path' => $path,
       'path' => $internal_path,
       'route' => $routeInfo,
-      'params' => $this->contextManager->getContextBag($path)->getProcessedContent()
+      'params' => $this->contextManager->getContextBag($path)->getProcessedContent(),
     ];
   }
 
+  /**
+   *
+   */
   private function getRouteInfo($path, $internal_path) {
     $contextBag = $this->contextManager->getContextBag($path);
     if ($contextBag->getRouteInfo()) {

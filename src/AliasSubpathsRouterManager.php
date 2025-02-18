@@ -5,6 +5,9 @@ namespace Drupal\alias_subpaths;
 use Drupal\Core\Entity\EntityInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ *
+ */
 class AliasSubpathsRouterManager {
 
   /**
