@@ -3,7 +3,6 @@
 namespace Drupal\alias_subpaths\EventSubscriber;
 
 use Drupal\alias_subpaths\AliasSubpathsManager;
-use Drupal\alias_subpaths\ContextManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Extension\ModuleHandlerInterface;
@@ -23,11 +22,6 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    * @var \Drupal\Core\Routing\CurrentRouteMatch
    */
   private CurrentRouteMatch $currentRouteMatch;
-
-  /**
-   * @var \Drupal\alias_subpaths\ContextManager
-   */
-  private ContextManager $contextManager;
 
   /**
    * The admin context service.

@@ -55,7 +55,7 @@ class ContextManager {
    *
    */
   public function isEmpty(string $key): bool {
-    return (!$this->getContextBag($key) || $this->getContextBag($key)->isEmpty());
+    return $this->getContextBag($key)->isEmpty();
   }
 
 }
