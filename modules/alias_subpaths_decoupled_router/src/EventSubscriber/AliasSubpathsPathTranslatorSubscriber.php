@@ -9,6 +9,7 @@ use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 /**
  * Provides a Subscriber for PathTranslator::TRANSLATE event.
@@ -54,7 +55,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     try {
       $this->aliasSubpathsManager->resolve($path);
     }
-    catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
+    catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException $exception) {
       $event->getResponse()->setData([
         'message' => $this->t(
           'Unable to resolve path @path.',
