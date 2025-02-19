@@ -94,7 +94,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
   public function run() {
 
     // @todo throw 404 if there are arguments and route doesn't allow it
-    if (!$this->routeAllowArguments()) {
+    if (!$this->routeAllowArguments() && $this->contextBag->isEmpty()) {
       return;
     }
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
