@@ -32,7 +32,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
   protected ArgumentResolverHandlerInterface $handler;
 
   /**
-   * @var \Drupal\alias_subpaths\ContextBag|mixed
+   * @var \Drupal\alias_subpaths\ContextBag
    */
   protected ContextBag $contextBag;
 
@@ -91,7 +91,7 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
   /**
    *
    */
-  public function run() {
+  public function run(): void {
 
     // @todo throw 404 if there are arguments and route doesn't allow it
     if (!$this->routeAllowArguments() && $this->contextBag->isEmpty()) {
