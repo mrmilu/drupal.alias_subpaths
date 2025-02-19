@@ -150,9 +150,9 @@ $settings['alias_subpaths__allowed_arguments_types'] = [
 
 // Set the resolver classes for each argument type
 $settings['alias_subpaths__argument_resolver_class'] = [
-  'entity:node:page' => '\Drupal\my_project\ArgumentResolver\NodePageArgumentResolver',
+  'entity:node:page' => '\Drupal\my_project\ArgumentResolver\CityArgumentResolver',
   'entity:node:article' => '\Drupal\my_project\ArgumentResolver\NodeArticleArgumentResolver',
-  'entity:taxonomy_term:tags' => '\Drupal\my_project\ArgumentResolver\TaxonomyTermTagsArgumentResolver',
+  'entity:taxonomy_term:tags' => '\Drupal\my_project\ArgumentResolver\TagsArgumentResolver',
 ];
 ```
 

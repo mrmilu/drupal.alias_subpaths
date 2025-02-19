@@ -2,53 +2,47 @@
 
 namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 
-use Drupal\alias_subpaths\AliasSubpathsUrlResolver;
-use Drupal\alias_subpaths\ContextManager;
+use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
-use Drupal\Core\Cache\CacheableJsonResponse;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\Routing\Exception\NoConfigurationException;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * Provides a Subscriber for PathTranslator::TRANSLATE event.
+ */
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
+  use StringTranslationTrait;
 
   /**
-   * @var \Drupal\alias_subpaths\AliasSubpathsUrlResolver
+   * AliasSubpathsManager service.
+   *
+   * @var \Drupal\alias_subpaths\AliasSubpathsManager
    */
-  private AliasSubpathsUrlResolver $aliasSubpathsUrlResolver;
+  private AliasSubpathsManager $aliasSubpathsManager;
 
   /**
-   * @var \Symfony\Component\Routing\RouterInterface
-   */
-  private RouterInterface $router;
-
-  /**
-   * @var \Drupal\alias_subpaths\ContextManager
-   */
-  private ContextManager $contextManager;
-
-  /**
-   * @param \Drupal\alias_subpaths\AliasSubpathsUrlResolver $alias_subpaths_url_resolver
-   * @param \Symfony\Component\Routing\RouterInterface $router
-   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   * Constructs a new AliasSubpathsPathTranslatorSubscriber.
+   *
+   * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
+   *   The AliasSubpathsManager parameter.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    */
   public function __construct(
-    AliasSubpathsUrlResolver $alias_subpaths_url_resolver,
-    RouterInterface $router,
-    ContextManager $context_manager
+    AliasSubpathsManager $alias_subpaths_manager,
+    TranslationInterface $string_translation,
   ) {
-    $this->aliasSubpathsUrlResolver = $alias_subpaths_url_resolver;
-    $this->router = $router;
-    $this->contextManager = $context_manager;
+    $this->aliasSubpathsManager = $alias_subpaths_manager;
+    $this->stringTranslation = $string_translation;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public static function getSubscribedEvents() {
-      $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
+    $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
     return $events;
   }
 
@@ -57,27 +51,16 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
    */
   public function onPathTranslation(PathTranslatorEvent $event) {
     $path = $event->getPath();
-    $internal_path = $this->aliasSubpathsUrlResolver->resolveUrl($path);
     try {
-      $route_parameters = $this->router->match($internal_path);
-    } catch (MethodNotAllowedException|NoConfigurationException|ResourceNotFoundException $e) {
-      return;
+      $this->aliasSubpathsManager->resolve($path);
     }
-
-    if (empty($route_parameters['_route'])) {
-      return;
-    }
-
-    $route_name = $route_parameters['_route'];
-    try {
-      $this->contextManager->processContextBag($path, $route_name);
-    } catch (NotAllowedArgumentsException|InvalidArgumentException $exception) {
+    catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
       $event->getResponse()->setData([
-        'message' => t(
+        'message' => $this->t(
           'Unable to resolve path @path.',
           ['@path' => $path]
         ),
-        'details' => t(
+        'details' => $this->t(
           'None of the available methods were able to find a match for this path.'
         ),
       ]);

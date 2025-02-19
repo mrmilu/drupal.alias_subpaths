@@ -37,4 +37,5 @@ class ContextBagFactory {
   public function create(): ContextBag {
     return new ContextBag($this->argumentProcessorManager);
   }
+
 }

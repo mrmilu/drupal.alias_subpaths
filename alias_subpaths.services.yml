@@ -4,30 +4,45 @@ services:
     arguments: ['@request_stack']
     tags:
       - { name: cache.context }
+
   plugin.manager.argument_processor:
     class: Drupal\alias_subpaths\Plugin\ArgumentProcessorManager
     parent: default_plugin_manager
+
   alias_subpaths.context_bag_factory:
     class: 'Drupal\alias_subpaths\ContextBagFactory'
     arguments: [ '@plugin.manager.argument_processor' ]
+
   alias_subpaths.context_manager:
     class: '\Drupal\alias_subpaths\ContextManager'
     arguments: ['@alias_subpaths.context_bag_factory']
+
   alias_subpaths.breadcrumb:
     class: '\Drupal\alias_subpaths\Breadcrumb\AliasSubpathsBreadcrumbBuilder'
     arguments: ['@router.admin_context']
     tags:
       - { name: breadcrumb_builder, priority: 5 }
+
   alias_subpaths.argument_processor_subscriber:
     class: Drupal\alias_subpaths\EventSubscriber\ArgumentProcessorEventSubscriber
-    arguments: ['@current_route_match', '@alias_subpaths.context_manager', '@router.admin_context']
+    arguments: ['@current_route_match', '@alias_subpaths.manager', '@router.admin_context', '@module_handler']
     tags:
       - { name: event_subscriber }
-  alias_subpaths.url_resolver:
-    class: '\Drupal\alias_subpaths\AliasSubpathsUrlResolver'
+
+  alias_subpaths.alias_manager:
+    class: '\Drupal\alias_subpaths\AliasSubpathsAliasManager'
     arguments: ['@path_alias.manager', '@alias_subpaths.context_manager']
+
   alias_subpaths.path_processor:
     class: Drupal\alias_subpaths\PathProcessor\PathProcessorAliasSubpaths
     tags:
       - { name: path_processor_inbound, priority: 90 }
-    arguments: ['@alias_subpaths.url_resolver']
+    arguments: ['@alias_subpaths.alias_manager']
+
+  alias_subpaths.router_manager:
+    class: '\Drupal\alias_subpaths\AliasSubpathsRouterManager'
+    arguments: ['@router.no_access_checks', '@alias_subpaths.context_manager']
+
+  alias_subpaths.manager:
+    class: Drupal\alias_subpaths\AliasSubpathsManager
+    arguments: ['@alias_subpaths.alias_manager', '@alias_subpaths.context_manager', '@alias_subpaths.router_manager']

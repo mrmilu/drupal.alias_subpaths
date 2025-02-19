@@ -18,19 +18,39 @@ function alias_subpaths_decoupled_router_decoupled_router_info_alter(&$output, $
   $arguments = $service->getContextBag($path)->getProcessedContent();
 
   foreach ($arguments as $input => $argument) {
-    if ($argument instanceof EntityInterface) {
-      $serialized_argument = [
-        'canonical' => $argument->toUrl('canonical', ['absolute' => TRUE])->toString(),
-        'type' => $argument->getEntityTypeId(),
-        'bundle' => $argument->bundle(),
-        'id' => $argument->id(),
-        'uuid' => $argument->uuid(),
-      ];
+    if (is_array($argument)) {
+      $serialized_argument = [];
+      foreach ($argument as $arg) {
+        $serialized_argument[] = _serialize_argument($arg);
+      }
     } else {
-      $serialized_argument = [
-        json_encode($argument), // @TODO: work on this response
-      ];
+      $serialized_argument = _serialize_argument($argument);
     }
     $output['alias_subpaths_context'][$input] = $serialized_argument;
   }
+}
+
+/**
+ * @param mixed $argument
+ *
+ * @return array
+ * @throws \Drupal\Core\Entity\EntityMalformedException
+ */
+function _serialize_argument(mixed $argument): array {
+  if ($argument instanceof EntityInterface) {
+    $serialized_argument = [
+      'canonical' => $argument->toUrl('canonical', ['absolute' => TRUE])
+        ->toString(),
+      'type' => $argument->getEntityTypeId(),
+      'bundle' => $argument->bundle(),
+      'id' => $argument->id(),
+      'uuid' => $argument->uuid(),
+    ];
+  }
+  else {
+    $serialized_argument = [
+      json_encode($argument), // @TODO: work on this response
+    ];
+  }
+  return $serialized_argument;
 }

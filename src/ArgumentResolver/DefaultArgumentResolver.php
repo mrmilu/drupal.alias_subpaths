@@ -2,10 +2,10 @@
 
 namespace Drupal\alias_subpaths\ArgumentResolver;
 
-class DefaultArgumentResolver implements ArgumentResolverInterface {
-
-  public function resolve($value) {
-    return $value;
-  }
+/**
+ *
+ */
+class DefaultArgumentResolver extends BaseArgumentResolver {
+  const PARAM_NAME = 'default';
 
 }

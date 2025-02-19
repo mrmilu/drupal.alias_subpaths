@@ -4,6 +4,7 @@ namespace Drupal\alias_subpaths\Plugin;
 
 use Drupal\alias_subpaths\ArgumentResolverHandler\ArgumentResolverHandlerInterface;
 use Drupal\alias_subpaths\ContextBag;
+use Drupal\alias_subpaths\ContextParam;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
@@ -13,6 +14,9 @@ use Drupal\alias_subpaths\ContextManager;
 use Drupal\Core\Site\Settings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
+/**
+ *
+ */
 class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInterface, ContainerFactoryPluginInterface {
 
   /**
@@ -27,18 +31,24 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
 
   protected ArgumentResolverHandlerInterface $handler;
 
+  /**
+   * @var \Drupal\alias_subpaths\ContextBag
+   */
+  protected ContextBag $contextBag;
+
   public function __construct(
     array $configuration,
     $plugin_id,
     $plugin_definition,
     ContextManager $context_manager,
-    CurrentRouteMatch $current_route_match
+    CurrentRouteMatch $current_route_match,
   ) {
     parent::__construct($configuration, $plugin_id, $plugin_definition);
     $this->contextManager = $context_manager;
     $this->currentRouteMatch = $current_route_match;
     $handlerClass = $this->getHandlerClass();
     $this->handler = new $handlerClass();
+    $this->contextBag = $configuration['context_bag'];
   }
 
   /**
@@ -54,27 +64,45 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     );
   }
 
-  public function process($context_argument, $allowed_argument_types) {
+  /**
+   *
+   */
+  public function process(ContextParam $context_argument, $allowed_argument_types) {
     foreach ($allowed_argument_types as $argument_type) {
-      $argument_resolver =  $this->handler->getArgumentResolver($argument_type);
-      if ($processed_argument = $argument_resolver->resolve($context_argument)) {
-        return $processed_argument;
+      $argument_resolver = $this->handler->getArgumentResolver($argument_type);
+      $raw_value = $context_argument->getRawValue();
+      if (!$argument_resolver->resolve($raw_value)) {
+        continue;
       }
+      $context_argument->setParamName($argument_resolver->getParamName());
+      $context_argument->setProcessedValue($argument_resolver->getProcessedValue($raw_value));
+      return TRUE;
     }
     throw new InvalidArgumentException();
   }
 
+  /**
+   *
+   */
   public function getAllowedArgumentTypes() {
     return $this->handler->getAllowedArgumentTypes($this->getId());
   }
 
-  public function run(ContextBag $contextBag) {
+  /**
+   *
+   */
+  public function run(): void {
+
+    // @todo throw 404 if there are arguments and route doesn't allow it
+    if (!$this->routeAllowArguments() && $this->contextBag->isEmpty()) {
+      return;
+    }
     if (!$allowed_argument_types = $this->getAllowedArgumentTypes()) {
       throw new NotAllowedArgumentsException();
     }
-    foreach ($contextBag->getRawContent() as $idx => $context_argument) {
-      $processed_argument = $this->process($context_argument, $allowed_argument_types);
-      $contextBag->addProcessed($idx, $processed_argument);
+
+    foreach ($this->contextBag->getParams() as $context_argument) {
+      $this->process($context_argument, $allowed_argument_types);
     }
   }
 
@@ -88,8 +116,18 @@ class ArgumentProcessorBase extends PluginBase implements ArgumentProcessorInter
     );
   }
 
+  /**
+   *
+   */
   protected function getId() {
     return $this->getPluginId();
+  }
+
+  /**
+   *
+   */
+  private function routeAllowArguments() {
+    return $this->handler->routeAllowArguments($this->getId());
   }
 
 }

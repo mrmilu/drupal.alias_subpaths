@@ -2,6 +2,9 @@
 
 namespace Drupal\alias_subpaths;
 
+/**
+ *
+ */
 class ContextManager {
 
   /**
@@ -25,15 +28,11 @@ class ContextManager {
   }
 
   /**
-   * Initializes a ContextBag for a given key.
-   *
-   * @param mixed $key
-   *   The key to associate with the ContextBag.
+   * @param $key
    *
    * @return \Drupal\alias_subpaths\ContextBag
-   *   The initialized ContextBag.
    */
-  public function initContextBag($key): ContextBag {
+  public function getContextBag($key): ContextBag {
     if (array_key_exists($key, $this->contextBag)) {
       return $this->contextBag[$key];
     }
@@ -43,26 +42,20 @@ class ContextManager {
 
   /**
    * @param $key
-   *
-   * @return \Drupal\alias_subpaths\ContextBag|null
-   */
-  public function getContextBag($key): ?ContextBag {
-    return $this->contextBag[$key] ?? NULL;
-  }
-
-  /**
-   * @param $key
    * @param $route_name
    *
    * @return array
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
-  public function processContextBag($key, $route_name): array {
-    return $this->getContextBag($key)->process($route_name);
+  public function processContextBag($key): array {
+    return $this->getContextBag($key)->process();
   }
 
+  /**
+   *
+   */
   public function isEmpty(string $key): bool {
-    return (!$this->getContextBag($key) || $this->getContextBag($key)->isEmpty());
+    return $this->getContextBag($key)->isEmpty();
   }
 
 }
