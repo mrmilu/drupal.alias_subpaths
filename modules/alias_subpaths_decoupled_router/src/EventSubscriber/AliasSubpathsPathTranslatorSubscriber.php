@@ -5,6 +5,8 @@ namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
+use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\decoupled_router\PathTranslatorEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
@@ -12,6 +14,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  * Provides a Subscriber for PathTranslator::TRANSLATE event.
  */
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
+  use StringTranslationTrait;
 
   /**
    * AliasSubpathsManager service.
@@ -25,11 +28,14 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
    *
    * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
    *   The AliasSubpathsManager parameter.
+   * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
    */
   public function __construct(
     AliasSubpathsManager $alias_subpaths_manager,
+    TranslationInterface $string_translation,
   ) {
     $this->aliasSubpathsManager = $alias_subpaths_manager;
+    $this->stringTranslation = $string_translation;
   }
 
   /**
@@ -50,11 +56,11 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     }
     catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
       $event->getResponse()->setData([
-        'message' => t(
+        'message' => $this->t(
           'Unable to resolve path @path.',
           ['@path' => $path]
         ),
-        'details' => t(
+        'details' => $this->t(
           'None of the available methods were able to find a match for this path.'
         ),
       ]);
