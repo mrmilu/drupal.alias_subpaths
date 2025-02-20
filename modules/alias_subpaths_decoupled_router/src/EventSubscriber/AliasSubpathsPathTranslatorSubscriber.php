@@ -12,13 +12,13 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 
 /**
- * Provides a Subscriber for PathTranslator::TRANSLATE event.
+ * Provides a subscriber for the PathTranslator::TRANSLATE event.
  */
 class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface {
   use StringTranslationTrait;
 
   /**
-   * AliasSubpathsManager service.
+   * The AliasSubpathsManager service.
    *
    * @var \Drupal\alias_subpaths\AliasSubpathsManager
    */
@@ -28,8 +28,9 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
    * Constructs a new AliasSubpathsPathTranslatorSubscriber.
    *
    * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
-   *   The AliasSubpathsManager parameter.
+   *   The AliasSubpathsManager service.
    * @param \Drupal\Core\StringTranslation\TranslationInterface $string_translation
+   *   The string translation service.
    */
   public function __construct(
     AliasSubpathsManager $alias_subpaths_manager,
@@ -40,7 +41,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
   }
 
   /**
-   * {@inheritDoc}
+   * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
     $events[PathTranslatorEvent::TRANSLATE][] = ['onPathTranslation'];
@@ -49,6 +50,9 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
 
   /**
    * Processes a path translation request.
+   *
+   * @param \Drupal\decoupled_router\PathTranslatorEvent $event
+   *   The event containing the path to be translated and the response object.
    */
   public function onPathTranslation(PathTranslatorEvent $event) {
     $path = $event->getPath();
@@ -68,7 +72,6 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
       $event->getResponse()->setStatusCode(404);
       $event->stopPropagation();
     }
-
   }
 
 }

@@ -14,11 +14,16 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 /**
+ * Processes alias subpaths arguments on kernel requests.
  *
+ * This subscriber validates and processes alias subpaths parameters for routes,
+ * adjusting the current route options accordingly.
  */
 class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
 
   /**
+   * The current route match service.
+   *
    * @var \Drupal\Core\Routing\CurrentRouteMatch
    */
   private CurrentRouteMatch $currentRouteMatch;
@@ -31,20 +36,30 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   protected $adminContext;
 
   /**
+   * The alias subpaths manager service.
+   *
    * @var \Drupal\alias_subpaths\AliasSubpathsManager
    */
   private AliasSubpathsManager $aliasSubpathsManager;
 
   /**
+   * The module handler service.
+   *
    * @var \Drupal\Core\Extension\ModuleHandlerInterface
    */
   private ModuleHandlerInterface $moduleHandler;
 
   /**
+   * Constructs a new ArgumentProcessorEventSubscriber.
+   *
    * @param \Drupal\Core\Routing\CurrentRouteMatch $current_route_match
+   *   The current route match service.
    * @param \Drupal\alias_subpaths\AliasSubpathsManager $alias_subpaths_manager
+   *   The alias subpaths manager service.
    * @param \Drupal\Core\Routing\AdminContext $admin_context
+   *   The admin context service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
@@ -59,7 +74,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public static function getSubscribedEvents() {
     $events[KernelEvents::REQUEST][] = ['onRequest', 31];
@@ -67,7 +82,15 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Processes the request event to handle alias subpaths resolution.
    *
+   * This method checks whether the current route is applicable for alias
+   * subpaths processing. If it is, the alias subpaths are resolved; otherwise,
+   * the request is skipped. If resolution fails, a NotFoundHttpException is
+   * thrown.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+   *   The request event.
    */
   public function onRequest(RequestEvent $event) {
     if ($this->isSystemRoute() ||
@@ -87,7 +110,8 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
 
     $requested_uri = urldecode($event->getRequest()->getPathInfo());
 
-    // Add new parameter to current route to determine if the route is a route that we are validating with this module.
+    // Add new parameter to current route to determine if the route is a route
+    // that we are validating with this module.
     $this->currentRouteMatch->getRouteObject()->setOption('_alias_subpaths_route', TRUE);
 
     // Disable route normalizer to avoid 301.
@@ -105,7 +129,10 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Determines if the current route is a system route.
    *
+   * @return bool
+   *   TRUE if the current route is a system route, FALSE otherwise.
    */
   private function isSystemRoute() {
     $route_name = $this->currentRouteMatch->getRouteName();
@@ -113,7 +140,10 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Determines if the current route is a views route.
    *
+   * @return bool
+   *   TRUE if the current route is a views route, FALSE otherwise.
    */
   private function isViewsRoute() {
     $route_name = $this->currentRouteMatch->getRouteName();
@@ -121,24 +151,36 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Determines if the current request corresponds to the front page.
    *
+   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
+   *   The request event.
+   *
+   * @return bool
+   *   TRUE if the request path is '/', FALSE otherwise.
    */
   private function isFrontPage(RequestEvent $event) {
     return $event->getRequest()->getPathInfo() === '/';
   }
 
   /**
+   * Determines if the current route is an admin route.
    *
+   * @return bool
+   *   TRUE if the current route is an admin route, FALSE otherwise.
    */
   public function isAdminRoute() {
     return $this->adminContext->isAdminRoute($this->currentRouteMatch->getRouteObject());
   }
 
   /**
-   * Check if we are in a media library rout, this is a special case because the
-   * media library it uses a custom route that does not belong to admin routes.
+   * Checks if the current route is a media library route.
+   *
+   * This is a special case because the media library uses a custom route that
+   * does not belong to admin routes.
    *
    * @return bool
+   *   TRUE if it's a media library route, FALSE otherwise.
    */
   public function isMediaLibraryRoute() {
     $route_object = $this->currentRouteMatch->getRouteObject();
@@ -146,7 +188,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   }
 
   /**
+   * Determines if the current route is the decoupled router path translation.
    *
+   * @return bool
+   *   TRUE if the current route is the decoupled router path translation route,
+   *   FALSE otherwise.
    */
   private function isDecoupledRouterRoute() {
     $route_name = $this->currentRouteMatch->getRouteName();

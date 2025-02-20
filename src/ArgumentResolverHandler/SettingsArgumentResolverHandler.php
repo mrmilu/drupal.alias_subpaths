@@ -7,12 +7,15 @@ use Drupal\alias_subpaths\ArgumentResolver\DefaultArgumentResolver;
 use Drupal\Core\Site\Settings;
 
 /**
+ * Provides a settings-based implementation of ArgumentResolverHandlerInterface.
  *
+ * This implementation retrieves allowed argument types and argument
+ * resolvers from the site's settings.
  */
 class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterface {
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function routeAllowArguments($id) {
     $allowed_arguments_types = Settings::get('alias_subpaths__allowed_arguments_types');
@@ -20,7 +23,7 @@ class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterfac
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function getAllowedArgumentTypes($id) {
     $allowed_arguments_types = Settings::get('alias_subpaths__allowed_arguments_types');
@@ -31,7 +34,7 @@ class SettingsArgumentResolverHandler implements ArgumentResolverHandlerInterfac
   }
 
   /**
-   *
+   * {@inheritdoc}
    */
   public function getArgumentResolver($id): ArgumentResolverInterface {
     $argument_resolver_classes = Settings::get('alias_subpaths__argument_resolver_class');

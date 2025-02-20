@@ -7,7 +7,8 @@ use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 /**
  * Class ContextBagFactory.
  *
- * Factory class for creating instances of ContextBag with the required dependencies.
+ * Factory class for creating instances of ContextBag with the
+ * required dependencies.
  */
 class ContextBagFactory {
 

@@ -5,27 +5,36 @@ namespace Drupal\alias_subpaths;
 use Drupal\path_alias\AliasManagerInterface;
 
 /**
+ * Manages alias subpaths resolution.
  *
+ * This class is responsible for resolving URL paths using the alias manager
+ * and processing context arguments via the context manager. It attempts to find
+ * the system path corresponding to a given alias by progressively reducing
+ * the path until a valid system path is found.
  */
 class AliasSubpathsAliasManager {
 
   /**
-   * An alias manager for looking up the system path.
+   * The alias manager for looking up the system path.
    *
    * @var \Drupal\path_alias\AliasManagerInterface
    */
   protected $aliasManager;
 
   /**
+   * The context manager service.
+   *
    * @var \Drupal\alias_subpaths\ContextManager
    */
   private ContextManager $contextManager;
 
   /**
-   * Constructs a AliasPathProcessor object.
+   * Constructs a new AliasSubpathsAliasManager.
    *
    * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
    *   An alias manager for looking up the system path.
+   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   *   The context manager service.
    */
   public function __construct(AliasManagerInterface $alias_manager, ContextManager $context_manager) {
     $this->aliasManager = $alias_manager;
@@ -33,7 +42,19 @@ class AliasSubpathsAliasManager {
   }
 
   /**
+   * Resolves the given URL path to its system path.
    *
+   * This method uses the context manager to retrieve or create a context bag
+   * for the provided path. If the context bag already contains a resolved path,
+   * that path is returned. Otherwise, the method attempts to resolve the path
+   * by progressively reducing the alias and checking for a corresponding system
+   * path. Any extracted arguments are added to the context bag.
+   *
+   * @param string $path
+   *   The URL path to resolve.
+   *
+   * @return string
+   *   The resolved system path.
    */
   public function resolveUrl($path) {
     $contextBag = $this->contextManager->getContextBag($path);
