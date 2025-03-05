@@ -5,6 +5,7 @@ namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
 use Drupal\decoupled_router\PathTranslatorEvent;
@@ -57,7 +58,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
   public function onPathTranslation(PathTranslatorEvent $event) {
     $path = $event->getPath();
     try {
-      $this->aliasSubpathsManager->resolve($path);
+      $path_data = $this->aliasSubpathsManager->resolve($path);
     }
     catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException $exception) {
       $event->getResponse()->setData([
@@ -71,6 +72,11 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
       ]);
       $event->getResponse()->setStatusCode(404);
       $event->stopPropagation();
+    }
+    foreach ($path_data['params'] as $param) {
+      if ($param instanceof EntityInterface) {
+        $event->getResponse()->addCacheableDependency($param);
+      }
     }
   }
 

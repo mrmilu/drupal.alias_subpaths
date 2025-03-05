@@ -5,11 +5,15 @@ namespace Drupal\alias_subpaths\EventSubscriber;
 use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\Core\Cache\CacheableResponseInterface;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
+use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 
@@ -78,6 +82,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    */
   public static function getSubscribedEvents() {
     $events[KernelEvents::REQUEST][] = ['onRequest', 31];
+    $events[KernelEvents::RESPONSE][] = ['onResponse'];
     return $events;
   }
 
@@ -197,6 +202,51 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   private function isDecoupledRouterRoute() {
     $route_name = $this->currentRouteMatch->getRouteName();
     return $route_name === "decoupled_router.path_translation";
+  }
+
+
+  public function onResponse(ResponseEvent $event) {
+    if ($this->isSystemRoute() ||
+      $this->isAdminRoute() ||
+      ($event->getRequest()->getPathInfo() === '/') ||
+      $this->isViewsRoute() ||
+      $this->isMediaLibraryRoute()
+    ) {
+      return;
+    }
+
+    if ($this->moduleHandler->moduleExists('decoupled_router') &&
+      $this->isDecoupledRouterRoute()
+    ) {
+      return;
+    }
+
+    $requested_uri = urldecode($event->getRequest()->getPathInfo());
+    try {
+      $path_data = $this->aliasSubpathsManager->resolve($requested_uri);
+    }
+    catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
+      throw new NotFoundHttpException();
+    }
+
+    $response = $event->getResponse();
+
+    foreach ($path_data['params'] as $param) {
+      if (is_array($param)) {
+        foreach ($param as $arg) {
+          $this->addCacheableDependency($response, $arg);
+        }
+      } else {
+        $this->addCacheableDependency($response, $param);
+      }
+    }
+  }
+
+  private function addCacheableDependency(Response $response, mixed $param) {
+    if (!$param instanceof EntityInterface || !$response instanceof CacheableResponseInterface) {
+      return;
+    }
+    $response->addCacheableDependency($param);
   }
 
 }
