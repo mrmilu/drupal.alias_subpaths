@@ -46,3 +46,8 @@ services:
   alias_subpaths.manager:
     class: Drupal\alias_subpaths\AliasSubpathsManager
     arguments: ['@alias_subpaths.alias_manager', '@alias_subpaths.context_manager', '@alias_subpaths.router_manager']
+
+  alias_subpaths.route_subscriber:
+    class: Drupal\alias_subpaths\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }

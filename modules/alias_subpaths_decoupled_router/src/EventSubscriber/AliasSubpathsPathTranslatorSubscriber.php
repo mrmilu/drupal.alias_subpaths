@@ -72,6 +72,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
       ]);
       $event->getResponse()->setStatusCode(404);
       $event->stopPropagation();
+      return;
     }
     foreach ($path_data['params'] as $param) {
       if ($param instanceof EntityInterface) {

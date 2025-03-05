@@ -98,22 +98,12 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    *   The request event.
    */
   public function onRequest(RequestEvent $event) {
-    if ($this->isSystemRoute() ||
-      $this->isAdminRoute() ||
-      $this->isFrontPage($event) ||
-      $this->isViewsRoute() ||
-      $this->isMediaLibraryRoute()
-    ) {
+    $request = $event->getRequest();
+    if ($request->attributes->get('_disable_alias_subpaths')) {
       return;
     }
 
-    if ($this->moduleHandler->moduleExists('decoupled_router') &&
-      $this->isDecoupledRouterRoute()
-    ) {
-      return;
-    }
-
-    $requested_uri = urldecode($event->getRequest()->getPathInfo());
+    $requested_uri = urldecode($request->getPathInfo());
 
     // Add new parameter to current route to determine if the route is a route
     // that we are validating with this module.
@@ -121,7 +111,6 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
 
     // Disable route normalizer to avoid 301.
     if ($this->moduleHandler->moduleExists('redirect')) {
-      $request = $event->getRequest();
       $request->attributes->set('_disable_route_normalizer', TRUE);
     }
 
@@ -133,95 +122,13 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     }
   }
 
-  /**
-   * Determines if the current route is a system route.
-   *
-   * @return bool
-   *   TRUE if the current route is a system route, FALSE otherwise.
-   */
-  private function isSystemRoute() {
-    $route_name = $this->currentRouteMatch->getRouteName();
-    return str_starts_with($route_name, "system.");
-  }
-
-  /**
-   * Determines if the current route is a views route.
-   *
-   * @return bool
-   *   TRUE if the current route is a views route, FALSE otherwise.
-   */
-  private function isViewsRoute() {
-    $route_name = $this->currentRouteMatch->getRouteName();
-    return str_starts_with($route_name, "view.");
-  }
-
-  /**
-   * Determines if the current request corresponds to the front page.
-   *
-   * @param \Symfony\Component\HttpKernel\Event\RequestEvent $event
-   *   The request event.
-   *
-   * @return bool
-   *   TRUE if the request path is '/', FALSE otherwise.
-   */
-  private function isFrontPage(RequestEvent $event) {
-    return $event->getRequest()->getPathInfo() === '/';
-  }
-
-  /**
-   * Determines if the current route is an admin route.
-   *
-   * @return bool
-   *   TRUE if the current route is an admin route, FALSE otherwise.
-   */
-  public function isAdminRoute() {
-    return $this->adminContext->isAdminRoute($this->currentRouteMatch->getRouteObject());
-  }
-
-  /**
-   * Checks if the current route is a media library route.
-   *
-   * This is a special case because the media library uses a custom route that
-   * does not belong to admin routes.
-   *
-   * @return bool
-   *   TRUE if it's a media library route, FALSE otherwise.
-   */
-  public function isMediaLibraryRoute() {
-    $route_object = $this->currentRouteMatch->getRouteObject();
-    return str_starts_with($route_object->getPath(), '/media-library');
-  }
-
-  /**
-   * Determines if the current route is the decoupled router path translation.
-   *
-   * @return bool
-   *   TRUE if the current route is the decoupled router path translation route,
-   *   FALSE otherwise.
-   */
-  private function isDecoupledRouterRoute() {
-    $route_name = $this->currentRouteMatch->getRouteName();
-    return $route_name === "decoupled_router.path_translation";
-  }
-
-
   public function onResponse(ResponseEvent $event) {
-    if ($this->isSystemRoute() ||
-      $this->isAdminRoute() ||
-      ($event->getRequest()->getPathInfo() === '/') ||
-      $this->isViewsRoute() ||
-      $this->isMediaLibraryRoute()
-    ) {
+    $request = $event->getRequest();
+    if ($request->attributes->get('_disable_alias_subpaths')) {
       return;
     }
 
-    if ($this->moduleHandler->moduleExists('decoupled_router') &&
-      $this->isDecoupledRouterRoute()
-    ) {
-      return;
-    }
-
-    $requested_uri = urldecode($event->getRequest()->getPathInfo());
+    $requested_uri = urldecode($request->getPathInfo());
     try {
       $path_data = $this->aliasSubpathsManager->resolve($requested_uri);
     }

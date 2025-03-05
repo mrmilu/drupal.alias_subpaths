@@ -41,6 +41,16 @@ Search.appendIndex(
             "summary": "The\u0020AliasSubpathsManager\u0020service.",
             "url": "classes/Drupal-alias-subpaths-decoupled-router-EventSubscriber-AliasSubpathsPathTranslatorSubscriber.html#property_aliasSubpathsManager"
         },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing\\RouteSubscriber",
+            "name": "RouteSubscriber",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-decoupled-router-Routing-RouteSubscriber.html"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing\\RouteSubscriber\u003A\u003AalterRoutes\u0028\u0029",
+            "name": "alterRoutes",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-decoupled-router-Routing-RouteSubscriber.html#method_alterRoutes"
+        },                {
             "fqsen": "\\alias_subpaths_examples_preprocess_node\u0028\u0029",
             "name": "alias_subpaths_examples_preprocess_node",
             "summary": "Implements\u0020hook_preprocess_node\u0028\u0029.",
@@ -536,35 +546,15 @@ Search.appendIndex(
             "summary": "Processes\u0020the\u0020request\u0020event\u0020to\u0020handle\u0020alias\u0020subpaths\u0020resolution.",
             "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_onRequest"
         },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisSystemRoute\u0028\u0029",
-            "name": "isSystemRoute",
-            "summary": "Determines\u0020if\u0020the\u0020current\u0020route\u0020is\u0020a\u0020system\u0020route.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isSystemRoute"
+            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AonResponse\u0028\u0029",
+            "name": "onResponse",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_onResponse"
         },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisViewsRoute\u0028\u0029",
-            "name": "isViewsRoute",
-            "summary": "Determines\u0020if\u0020the\u0020current\u0020route\u0020is\u0020a\u0020views\u0020route.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isViewsRoute"
-        },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisFrontPage\u0028\u0029",
-            "name": "isFrontPage",
-            "summary": "Determines\u0020if\u0020the\u0020current\u0020request\u0020corresponds\u0020to\u0020the\u0020front\u0020page.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isFrontPage"
-        },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisAdminRoute\u0028\u0029",
-            "name": "isAdminRoute",
-            "summary": "Determines\u0020if\u0020the\u0020current\u0020route\u0020is\u0020an\u0020admin\u0020route.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isAdminRoute"
-        },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisMediaLibraryRoute\u0028\u0029",
-            "name": "isMediaLibraryRoute",
-            "summary": "Checks\u0020if\u0020the\u0020current\u0020route\u0020is\u0020a\u0020media\u0020library\u0020route.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isMediaLibraryRoute"
-        },                {
-            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AisDecoupledRouterRoute\u0028\u0029",
-            "name": "isDecoupledRouterRoute",
-            "summary": "Determines\u0020if\u0020the\u0020current\u0020route\u0020is\u0020the\u0020decoupled\u0020router\u0020path\u0020translation.",
-            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_isDecoupledRouterRoute"
+            "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AaddCacheableDependency\u0028\u0029",
+            "name": "addCacheableDependency",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_addCacheableDependency"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003A\u0024currentRouteMatch",
             "name": "currentRouteMatch",
@@ -736,6 +726,16 @@ Search.appendIndex(
             "summary": "",
             "url": "classes/Drupal-alias-subpaths-Plugin-Attribute-ArgumentProcessor.html#property_route_name"
         },                {
+            "fqsen": "\\Drupal\\alias_subpaths\\Routing\\RouteSubscriber",
+            "name": "RouteSubscriber",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-Routing-RouteSubscriber.html"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths\\Routing\\RouteSubscriber\u003A\u003AalterRoutes\u0028\u0029",
+            "name": "alterRoutes",
+            "summary": "",
+            "url": "classes/Drupal-alias-subpaths-Routing-RouteSubscriber.html#method_alterRoutes"
+        },                {
             "fqsen": "\\",
             "name": "\\",
             "summary": "",
@@ -755,6 +755,11 @@ Search.appendIndex(
             "name": "Drupal",
             "summary": "",
             "url": "namespaces/drupal.html"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing",
+            "name": "Routing",
+            "summary": "",
+            "url": "namespaces/drupal-alias-subpaths-decoupled-router-routing.html"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths_node\\Plugin\\ArgumentProcessor",
             "name": "ArgumentProcessor",
@@ -840,5 +845,10 @@ Search.appendIndex(
             "name": "Attribute",
             "summary": "",
             "url": "namespaces/drupal-alias-subpaths-plugin-attribute.html"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths\\Routing",
+            "name": "Routing",
+            "summary": "",
+            "url": "namespaces/drupal-alias-subpaths-routing.html"
         }            ]
 );

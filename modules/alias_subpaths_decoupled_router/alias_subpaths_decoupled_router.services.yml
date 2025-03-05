@@ -4,3 +4,8 @@ services:
     tags:
       - { name: event_subscriber }
     arguments: ['@alias_subpaths.manager', '@string_translation']
+
+  alias_subpaths_decoupled_router.route_subscriber:
+    class: Drupal\alias_subpaths_decoupled_router\Routing\RouteSubscriber
+    tags:
+      - { name: event_subscriber }
