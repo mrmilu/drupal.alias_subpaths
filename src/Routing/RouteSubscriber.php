@@ -5,10 +5,13 @@ namespace Drupal\alias_subpaths\Routing;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
 
+/**
+ * Modify core routes to support alias_subpaths.
+ */
 class RouteSubscriber extends RouteSubscriberBase {
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   protected function alterRoutes(RouteCollection $collection) {
     if ($route = $collection->get('image.style_public')) {

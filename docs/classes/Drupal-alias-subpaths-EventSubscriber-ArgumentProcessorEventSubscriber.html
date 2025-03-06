@@ -85,6 +85,16 @@
     <a href="packages/Application.html" class="">Application</a>
 </h4>
 
+                                    <h4 class="phpdocumentor-sidebar__root-namespace">
+    <a href="packages/Drupal.html" class="">Drupal</a>
+</h4>
+    <ul class="phpdocumentor-list">
+                    <li>
+                <a href="packages/Drupal-alias.html" class="">alias</a>
+                
+            </li>
+            </ul>
+
                         </section>
             
     <section class="phpdocumentor-sidebar__category -reports">
@@ -240,12 +250,14 @@ adjusting the current route options accordingly.</p>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
+<dd>Processes the response event to add cacheable dependencies.</dd>
 
             <dt class="phpdocumentor-table-of-contents__entry -method -private">
     <a class="" href="classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_addCacheableDependency">addCacheableDependency()</a>
     <span>
                                 &nbsp;: mixed    </span>
 </dt>
+<dd>Adds the given parameter as a cacheable dependency to the response.</dd>
 
     </dl>
 
@@ -591,11 +603,12 @@ thrown.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/EventSubscriber/ArgumentProcessorEventSubscriber.php"><a href="files/src-eventsubscriber-argumentprocessoreventsubscriber.html"><abbr title="src/EventSubscriber/ArgumentProcessorEventSubscriber.php">ArgumentProcessorEventSubscriber.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">125</span>
+    <span class="phpdocumentor-element-found-in__line">146</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Processes the response event to add cacheable dependencies.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">public</span>
                     <span class="phpdocumentor-signature__name">onResponse</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpKernel\Event\ResponseEvent">ResponseEvent</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$event</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
@@ -603,7 +616,18 @@ thrown.</p>
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>This method is invoked during the response event. It checks if alias
+subpaths processing is disabled for the current request by inspecting the
+'_disable_alias_subpaths' attribute. If not disabled, it decodes the
+requested URI and attempts to resolve alias subpaths via the
+AliasSubpathsManager. The resolved data contains parameters,
+which are then iterated. For each parameter (or each value in a parameter
+array), if it represents an entity, its cacheable dependency is added to
+the response.</p>
+<p>This ensures that if any of these entities are modified, the page cache
+will be invalidated.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -611,11 +635,30 @@ thrown.</p>
                 : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpKernel\Event\ResponseEvent">ResponseEvent</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><p>The response event containing the request and response objects.</p>
+</section>
+
             </dd>
             </dl>
 
     
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_onResponse#tags" class="headerlink"><i class="fas fa-link"></i></a>
+
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\Symfony\Component\HttpKernel\Exception\NotFoundHttpException">NotFoundHttpException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>Thrown if resolution fails due to invalid or not allowed arguments.</p>
+</section>
+
+                                    </dd>
+                                            </dl>
 
     
 
@@ -635,11 +678,12 @@ thrown.</p>
     <aside class="phpdocumentor-element-found-in">
     <abbr class="phpdocumentor-element-found-in__file" title="src/EventSubscriber/ArgumentProcessorEventSubscriber.php"><a href="files/src-eventsubscriber-argumentprocessoreventsubscriber.html"><abbr title="src/EventSubscriber/ArgumentProcessorEventSubscriber.php">ArgumentProcessorEventSubscriber.php</abbr></a></abbr>
     :
-    <span class="phpdocumentor-element-found-in__line">152</span>
+    <span class="phpdocumentor-element-found-in__line">187</span>
 
     </aside>
 
-    
+        <p class="phpdocumentor-summary">Adds the given parameter as a cacheable dependency to the response.</p>
+
     <code class="phpdocumentor-code phpdocumentor-signature ">
     <span class="phpdocumentor-signature__visibility">private</span>
                     <span class="phpdocumentor-signature__name">addCacheableDependency</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr>&nbsp;</span><span class="phpdocumentor-signature__argument__name">$response</span></span><span class="phpdocumentor-signature__argument"><span>, </span><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$param</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">mixed</span></code>
@@ -647,7 +691,12 @@ thrown.</p>
     <div class="phpdocumentor-label-line">
         </div>
     
-    
+        <section class="phpdocumentor-description"><p>If the parameter is an instance of EntityInterface and the response
+implements CacheableResponseInterface, the entity is added as a
+cacheable dependency to the response. This ensures that changes to
+the entity will trigger invalidation of the page cache.</p>
+</section>
+
         <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
     <dl class="phpdocumentor-argument-list">
                     <dt class="phpdocumentor-argument-list__entry">
@@ -655,14 +704,18 @@ thrown.</p>
                 : <span class="phpdocumentor-signature__argument__return-type"><abbr title="\Symfony\Component\HttpFoundation\Response">Response</abbr></span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><p>The response object to which the cacheable dependency should be added.</p>
+</section>
+
             </dd>
                     <dt class="phpdocumentor-argument-list__entry">
                 <span class="phpdocumentor-signature__argument__name">$param</span>
                 : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
                             </dt>
             <dd class="phpdocumentor-argument-list__definition">
-                
+                    <section class="phpdocumentor-description"><p>The parameter to evaluate.</p>
+</section>
+
             </dd>
             </dl>
 

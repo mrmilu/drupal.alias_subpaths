@@ -122,6 +122,27 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     }
   }
 
+  /**
+   * Processes the response event to add cacheable dependencies.
+   *
+   * This method is invoked during the response event. It checks if alias
+   * subpaths processing is disabled for the current request by inspecting the
+   * '_disable_alias_subpaths' attribute. If not disabled, it decodes the
+   * requested URI and attempts to resolve alias subpaths via the
+   * AliasSubpathsManager. The resolved data contains parameters,
+   * which are then iterated. For each parameter (or each value in a parameter
+   * array), if it represents an entity, its cacheable dependency is added to
+   * the response.
+   *
+   * This ensures that if any of these entities are modified, the page cache
+   * will be invalidated.
+   *
+   * @param \Symfony\Component\HttpKernel\Event\ResponseEvent $event
+   *   The response event containing the request and response objects.
+   *
+   * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+   *   Thrown if resolution fails due to invalid or not allowed arguments.
+   */
   public function onResponse(ResponseEvent $event) {
     $request = $event->getRequest();
     if ($request->attributes->get('_disable_alias_subpaths')) {
@@ -143,12 +164,26 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
         foreach ($param as $arg) {
           $this->addCacheableDependency($response, $arg);
         }
-      } else {
+      }
+      else {
         $this->addCacheableDependency($response, $param);
       }
     }
   }
 
+  /**
+   * Adds the given parameter as a cacheable dependency to the response.
+   *
+   * If the parameter is an instance of EntityInterface and the response
+   * implements CacheableResponseInterface, the entity is added as a
+   * cacheable dependency to the response. This ensures that changes to
+   * the entity will trigger invalidation of the page cache.
+   *
+   * @param \Symfony\Component\HttpFoundation\Response $response
+   *   The response object to which the cacheable dependency should be added.
+   * @param mixed $param
+   *   The parameter to evaluate.
+   */
   private function addCacheableDependency(Response $response, mixed $param) {
     if (!$param instanceof EntityInterface || !$response instanceof CacheableResponseInterface) {
       return;

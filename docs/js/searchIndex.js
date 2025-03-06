@@ -8,13 +8,8 @@ Search.appendIndex(
         },                {
             "fqsen": "\\alias_subpaths_decoupled_router_decoupled_router_info_alter\u0028\u0029",
             "name": "alias_subpaths_decoupled_router_decoupled_router_info_alter",
-            "summary": "",
+            "summary": "Implements\u0020hook_decoupled_router_info_alter\u0028\u0029.",
             "url": "namespaces/default.html#function_alias_subpaths_decoupled_router_decoupled_router_info_alter"
-        },                {
-            "fqsen": "\\_serialize_argument\u0028\u0029",
-            "name": "_serialize_argument",
-            "summary": "",
-            "url": "namespaces/default.html#function__serialize_argument"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\EventSubscriber\\AliasSubpathsPathTranslatorSubscriber",
             "name": "AliasSubpathsPathTranslatorSubscriber",
@@ -43,13 +38,23 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing\\RouteSubscriber",
             "name": "RouteSubscriber",
-            "summary": "",
+            "summary": "Modify\u0020decoupled_router\u0020routes\u0020to\u0020support\u0020alias_subpaths.",
             "url": "classes/Drupal-alias-subpaths-decoupled-router-Routing-RouteSubscriber.html"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing\\RouteSubscriber\u003A\u003AalterRoutes\u0028\u0029",
             "name": "alterRoutes",
-            "summary": "",
+            "summary": "\u007B\u0040inheritDoc\u007D",
             "url": "classes/Drupal-alias-subpaths-decoupled-router-Routing-RouteSubscriber.html#method_alterRoutes"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\SerializerHelper",
+            "name": "SerializerHelper",
+            "summary": "Provides\u0020helper\u0020methods\u0020for\u0020serializing\u0020arguments.",
+            "url": "classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html"
+        },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\SerializerHelper\u003A\u003Aserialize\u0028\u0029",
+            "name": "serialize",
+            "summary": "Serializes\u0020an\u0020argument\u0020into\u0020an\u0020array\u0020representation.",
+            "url": "classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#method_serialize"
         },                {
             "fqsen": "\\alias_subpaths_examples_preprocess_node\u0028\u0029",
             "name": "alias_subpaths_examples_preprocess_node",
@@ -548,12 +553,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AonResponse\u0028\u0029",
             "name": "onResponse",
-            "summary": "",
+            "summary": "Processes\u0020the\u0020response\u0020event\u0020to\u0020add\u0020cacheable\u0020dependencies.",
             "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_onResponse"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003AaddCacheableDependency\u0028\u0029",
             "name": "addCacheableDependency",
-            "summary": "",
+            "summary": "Adds\u0020the\u0020given\u0020parameter\u0020as\u0020a\u0020cacheable\u0020dependency\u0020to\u0020the\u0020response.",
             "url": "classes/Drupal-alias-subpaths-EventSubscriber-ArgumentProcessorEventSubscriber.html#method_addCacheableDependency"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\EventSubscriber\\ArgumentProcessorEventSubscriber\u003A\u003A\u0024currentRouteMatch",
@@ -728,12 +733,12 @@ Search.appendIndex(
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\Routing\\RouteSubscriber",
             "name": "RouteSubscriber",
-            "summary": "",
+            "summary": "Modify\u0020core\u0020routes\u0020to\u0020support\u0020alias_subpaths.",
             "url": "classes/Drupal-alias-subpaths-Routing-RouteSubscriber.html"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths\\Routing\\RouteSubscriber\u003A\u003AalterRoutes\u0028\u0029",
             "name": "alterRoutes",
-            "summary": "",
+            "summary": "\u007B\u0040inheritDoc\u007D",
             "url": "classes/Drupal-alias-subpaths-Routing-RouteSubscriber.html#method_alterRoutes"
         },                {
             "fqsen": "\\",
@@ -746,6 +751,11 @@ Search.appendIndex(
             "summary": "",
             "url": "namespaces/drupal-alias-subpaths-decoupled-router-eventsubscriber.html"
         },                {
+            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing",
+            "name": "Routing",
+            "summary": "",
+            "url": "namespaces/drupal-alias-subpaths-decoupled-router-routing.html"
+        },                {
             "fqsen": "\\Drupal\\alias_subpaths_decoupled_router",
             "name": "alias_subpaths_decoupled_router",
             "summary": "",
@@ -755,11 +765,6 @@ Search.appendIndex(
             "name": "Drupal",
             "summary": "",
             "url": "namespaces/drupal.html"
-        },                {
-            "fqsen": "\\Drupal\\alias_subpaths_decoupled_router\\Routing",
-            "name": "Routing",
-            "summary": "",
-            "url": "namespaces/drupal-alias-subpaths-decoupled-router-routing.html"
         },                {
             "fqsen": "\\Drupal\\alias_subpaths_node\\Plugin\\ArgumentProcessor",
             "name": "ArgumentProcessor",

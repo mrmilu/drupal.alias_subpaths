@@ -51,6 +51,9 @@ use Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor;
 )]
 class NodeArgumentProcessor extends ArgumentProcessorBase {
 
+  /**
+   *
+   */
   protected function getId() {
     return 'entity:node:' . $this->currentRouteMatch->getParameter('node')->bundle();
   }
@@ -64,8 +67,8 @@ identify each route into your `ArgumentResolverHandler`.
 
 `ArgumentResolverHandler` is a class that defines for each route id what
 argument types are allowed. By default, this module provides an argument
-resolver handler based on `settings.php` variables, but it can be changed for
-a custom one overriding this `settings.php` variable:
+resolver handler based on `settings . php` variables, but it can be changed for
+a custom one overriding this `settings . php` variable:
 
 ```php
 $settings['alias_subpaths__argument_resolver_handler_class'] = '\Drupal\alias_subpaths\ArgumentResolverHandler\SettingsArgumentResolverHandler';
@@ -77,20 +80,20 @@ Ensure that your custom class implements `ArgumentResolverHandlerInterface`.
 
 To set up what argument types are available for each route you have to override
 `alias_subpaths__allowed_arguments_types` variable
-in `settings.php`. This variable is an array like this:
+in `settings . php`. This variable is an array like this:
 
 ```php
 $settings['alias_subpaths__allowed_arguments_types'] = [
   'route_1' => [
     'argument_type_1',
     'argument_type_2',
-    //...
+    // ...
     'argument_type_n',
   ],
   'route_2' => [
-    //...
+    // ...
   ],
-  //...
+  // ...
 ];
 ```
 
@@ -98,7 +101,7 @@ If we use `alias_subpaths_node` module, route ids are segmented by bundle like
 this: `entity:node:{bundle}`.
 
 Then you have to set up a new array variable called
-`alias_subpaths__argument_resolver_class` in `settings.php` to map each
+`alias_subpaths__argument_resolver_class` in `settings . php` to map each
 argument type with a class to resolve it which has to
 implement `ArgumentResolverInterface`:
 
@@ -106,7 +109,7 @@ implement `ArgumentResolverInterface`:
 $settings['alias_subpaths__argument_resolver_class'] = [
   'argument_type_1' => '\Drupal\my_project\ArgumentResolver\ArgumentType1Resolver',
   'argument_type_2' => '\Drupal\my_project\ArgumentResolver\ArgumentType2Resolver',
-  //...
+  // ...
   'argument_type_3' => '\Drupal\my_project\ArgumentResolver\ArgumentTypeNResolver',
 ];
 ```
@@ -130,13 +133,13 @@ To resolve arguments we want to use this fields for each argument type:
 - Taxonomy term of tags vocabulary: name of the term
 
 Once we have installed `alias_subpaths_node` and `alias_subpaths_taxonomy_term`
-modules, we have to fill this configuration on `settings.php`:
+modules, we have to fill this configuration on `settings . php`:
 
 ```php
 // Specify ArgumentResolverHandler (Optional)
 $settings['alias_subpaths__argument_resolver_handler_class'] = '\Drupal\alias_subpaths\ArgumentResolverHandler\SettingsArgumentResolverHandler';
 
-// Set allowed argument types for our project
+// Set allowed argument types for our project.
 $settings['alias_subpaths__allowed_arguments_types'] = [
   'entity:node:filtered_page' => [
     'entity:node:page',
@@ -145,10 +148,10 @@ $settings['alias_subpaths__allowed_arguments_types'] = [
   ],
   'entity:taxonomy_term:tags' => [
     'entity:node:page',
-  ]
+  ],
 ];
 
-// Set the resolver classes for each argument type
+// Set the resolver classes for each argument type.
 $settings['alias_subpaths__argument_resolver_class'] = [
   'entity:node:page' => '\Drupal\my_project\ArgumentResolver\CityArgumentResolver',
   'entity:node:article' => '\Drupal\my_project\ArgumentResolver\NodeArticleArgumentResolver',
@@ -167,8 +170,14 @@ namespace Drupal\my_project\ArgumentResolver;
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\node\Entity\Node;
 
+/**
+ *
+ */
 class NodePageArgumentResolver implements ArgumentResolverInterface {
 
+  /**
+   *
+   */
   public function resolve($value) {
     $nids = \Drupal::entityQuery('node')
       ->accessCheck()
@@ -192,8 +201,14 @@ namespace Drupal\my_project\ArgumentResolver;
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\node\Entity\Node;
 
+/**
+ *
+ */
 class NodeArticleArgumentResolver implements ArgumentResolverInterface {
 
+  /**
+   *
+   */
   public function resolve($value) {
     $nids = \Drupal::entityQuery('node')
       ->accessCheck()
@@ -217,8 +232,14 @@ namespace Drupal\my_project\ArgumentResolver;
 use Drupal\alias_subpaths\ArgumentResolver\ArgumentResolverInterface;
 use Drupal\taxonomy\Entity\Term;
 
+/**
+ *
+ */
 class TaxonomyTermTagsArgumentResolver implements ArgumentResolverInterface {
 
+  /**
+   *
+   */
   public function resolve($value) {
     $tids = \Drupal::entityQuery('taxonomy_term')
       ->accessCheck()
@@ -247,6 +268,7 @@ To illustrate this there is a submodule called `alias_subpaths_examples` that
 uses arguments into `hook_preprocess_node`:
 
 ```php
+
 /**
  * Implements hook_preprocess_node().
  */
@@ -255,8 +277,9 @@ function alias_subpaths_examples_preprocess_node(array &$variables) {
   if ($node->bundle() === 'filtered_page') {
     // Set alias subpaths arguments as node variables.
     $variables['alias_subpaths_arguments'] = \Drupal::service('alias_subpaths.context_manager')->getContextBag();
-    // Set processed alias subpaths arguments as node variables
+    // Set processed alias subpaths arguments as node variables.
     $variables['alias_subpaths_arguments_processed'] = \Drupal::service('alias_subpaths.context_manager')->getProcessedContextBag();
   }
 }
+
 ```

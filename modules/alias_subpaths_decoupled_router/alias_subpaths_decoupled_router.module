@@ -1,7 +1,16 @@
 <?php
 
-use Drupal\Core\Entity\EntityInterface;
+/**
+ * @file
+ * Hooks for alias_subpaths_decoupled_router.module.
+ */
 
+use Drupal\Core\Entity\EntityMalformedException;
+use Drupal\alias_subpaths_decoupled_router\SerializerHelper;
+
+/**
+ * Implements hook_decoupled_router_info_alter().
+ */
 function alias_subpaths_decoupled_router_decoupled_router_info_alter(&$output, $context) {
   $output['alias_subpaths_context'] = [];
 
@@ -21,36 +30,22 @@ function alias_subpaths_decoupled_router_decoupled_router_info_alter(&$output, $
     if (is_array($argument)) {
       $serialized_argument = [];
       foreach ($argument as $arg) {
-        $serialized_argument[] = _serialize_argument($arg);
+        try {
+          $serialized_argument[] = SerializerHelper::serialize($arg);
+        }
+        catch (EntityMalformedException $e) {
+          continue;
+        }
       }
-    } else {
-      $serialized_argument = _serialize_argument($argument);
+    }
+    else {
+      try {
+        $serialized_argument = SerializerHelper::serialize($argument);
+      }
+      catch (EntityMalformedException $e) {
+        continue;
+      }
     }
     $output['alias_subpaths_context'][$input] = $serialized_argument;
   }
-}
-
-/**
- * @param mixed $argument
- *
- * @return array
- * @throws \Drupal\Core\Entity\EntityMalformedException
- */
-function _serialize_argument(mixed $argument): array {
-  if ($argument instanceof EntityInterface) {
-    $serialized_argument = [
-      'canonical' => $argument->toUrl('canonical', ['absolute' => TRUE])
-        ->toString(),
-      'type' => $argument->getEntityTypeId(),
-      'bundle' => $argument->bundle(),
-      'id' => $argument->id(),
-      'uuid' => $argument->uuid(),
-    ];
-  }
-  else {
-    $serialized_argument = [
-      json_encode($argument), // @TODO: work on this response
-    ];
-  }
-  return $serialized_argument;
 }

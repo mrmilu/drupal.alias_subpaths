@@ -114,46 +114,197 @@
                                 <section>
                                         <ul class="phpdocumentor-breadcrumbs">
             <li class="phpdocumentor-breadcrumb"><a href="namespaces/drupal.html">Drupal</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/drupal-alias-subpaths.html">alias_subpaths</a></li>
-            <li class="phpdocumentor-breadcrumb"><a href="namespaces/drupal-alias-subpaths-plugin.html">Plugin</a></li>
+            <li class="phpdocumentor-breadcrumb"><a href="namespaces/drupal-alias-subpaths-decoupled-router.html">alias_subpaths_decoupled_router</a></li>
     </ul>
 
-    <article class="phpdocumentor-element -namespace">
-        <h2 class="phpdocumentor-content__title">Attribute</h2>
+    <article class="phpdocumentor-element -class">
+        <h2 class="phpdocumentor-content__title">
+    SerializerHelper
 
-        
+    
+            <div class="phpdocumentor-element__package">
+            in package
+            <ul class="phpdocumentor-breadcrumbs">
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drupal.html">Drupal</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drupal-alias.html">alias</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drupal-alias-subpaths.html">subpaths</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drupal-alias-subpaths-decoupled.html">decoupled</a></li>
+                                    <li class="phpdocumentor-breadcrumb"><a href="packages/Drupal-alias-subpaths-decoupled-router.html">router</a></li>
+                            </ul>
+        </div>
+    
+    
+    </h2>
+
+<div class="phpdocumentor-label-line">
+
+
+</div>
+
+        <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="modules/alias_subpaths_decoupled_router/src/SerializerHelper.php"><a href="files/modules-alias-subpaths-decoupled-router-src-serializerhelper.html"><abbr title="modules/alias_subpaths_decoupled_router/src/SerializerHelper.php">SerializerHelper.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">19</span>
+
+    </aside>
+
+            <p class="phpdocumentor-summary">Provides helper methods for serializing arguments.</p>
+
+
+    <section class="phpdocumentor-description"><p>This class offers a static method to convert various types of arguments
+into an array representation. If the argument is a Drupal entity (i.e.,
+it implements EntityInterface), it will be serialized into an associative
+array that includes the entity's canonical URL, type, bundle, ID, and UUID.
+For non-entity arguments, the method returns an array containing the
+JSON-encoded value.</p>
+</section>
+
+
+
+
+
+
+
 <h3 id="toc">
     Table of Contents
-    <a href="namespaces/drupal-alias-subpaths-plugin-attribute.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
+    <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#toc" class="headerlink"><i class="fas fa-link"></i></a>
 
 </h3>
 
 
 
 
-    <h4 id="toc-classes">
-        Classes
-        <a href="namespaces/drupal-alias-subpaths-plugin-attribute.html#toc-classes" class="headerlink"><i class="fas fa-link"></i></a>
+
+
+
+
+
+
+<h4 id="toc-methods">
+    Methods
+    <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#toc-methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+</h4>
+<dl class="phpdocumentor-table-of-contents">
+            <dt class="phpdocumentor-table-of-contents__entry -method -public">
+    <a class="" href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#method_serialize">serialize()</a>
+    <span>
+                                &nbsp;: array&lt;string|int, mixed&gt;    </span>
+</dt>
+<dd>Serializes an argument into an array representation.</dd>
+
+    </dl>
+
+
+
+        
+
+        
+
+            <section class="phpdocumentor-methods">
+        <h3 class="phpdocumentor-elements__header" id="methods">
+            Methods
+            <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#methods" class="headerlink"><i class="fas fa-link"></i></a>
+
+        </h3>
+                    <article
+        class="phpdocumentor-element
+            -method
+            -public
+                                    -static                    "
+>
+    <h4 class="phpdocumentor-element__name" id="method_serialize">
+        serialize()
+        <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#method_serialize" class="headerlink"><i class="fas fa-link"></i></a>
 
     </h4>
-    <dl class="phpdocumentor-table-of-contents">
-                    <dt class="phpdocumentor-table-of-contents__entry -class"><a href="classes/Drupal-alias-subpaths-Plugin-Attribute-ArgumentProcessor.html"><abbr title="\Drupal\alias_subpaths\Plugin\Attribute\ArgumentProcessor">ArgumentProcessor</abbr></a></dt><dd>Defines the ArgumentProcessor attribute.</dd>    </dl>
+    <aside class="phpdocumentor-element-found-in">
+    <abbr class="phpdocumentor-element-found-in__file" title="modules/alias_subpaths_decoupled_router/src/SerializerHelper.php"><a href="files/modules-alias-subpaths-decoupled-router-src-serializerhelper.html"><abbr title="modules/alias_subpaths_decoupled_router/src/SerializerHelper.php">SerializerHelper.php</abbr></a></abbr>
+    :
+    <span class="phpdocumentor-element-found-in__line">47</span>
 
+    </aside>
 
+        <p class="phpdocumentor-summary">Serializes an argument into an array representation.</p>
 
+    <code class="phpdocumentor-code phpdocumentor-signature ">
+    <span class="phpdocumentor-signature__visibility">public</span>
+            <span class="phpdocumentor-signature__static">static</span>        <span class="phpdocumentor-signature__name">serialize</span><span>(</span><span class="phpdocumentor-signature__argument"><span class="phpdocumentor-signature__argument__return-type">mixed&nbsp;</span><span class="phpdocumentor-signature__argument__name">$argument</span></span><span>)</span><span> : </span><span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span></code>
 
+    <div class="phpdocumentor-label-line">
+        </div>
+    
+        <section class="phpdocumentor-description"><p>If the argument is an instance of EntityInterface, an associative array
+with the entity's canonical URL, type, bundle, ID, and UUID is returned.
+Otherwise, the argument is JSON-encoded and returned as a single-element
+array.</p>
+</section>
 
+        <h5 class="phpdocumentor-argument-list__heading">Parameters</h5>
+    <dl class="phpdocumentor-argument-list">
+                    <dt class="phpdocumentor-argument-list__entry">
+                <span class="phpdocumentor-signature__argument__name">$argument</span>
+                : <span class="phpdocumentor-signature__argument__return-type">mixed</span>
+                            </dt>
+            <dd class="phpdocumentor-argument-list__definition">
+                    <section class="phpdocumentor-description"><p>The argument to serialize. Typically, this is an entity or any other
+serializable value.</p>
+</section>
 
+            </dd>
+            </dl>
 
+    
+    <h5 class="phpdocumentor-tag-list__heading" id="tags">
+        Tags
+        <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#method_serialize#tags" class="headerlink"><i class="fas fa-link"></i></a>
 
-        
+    </h5>
+    <dl class="phpdocumentor-tag-list">
+                                    <dt class="phpdocumentor-tag-list__entry">
+                    <span class="phpdocumentor-tag__name">throws</span>
+                </dt>
+                <dd class="phpdocumentor-tag-list__definition">
+                                                                <span class="phpdocumentor-tag-link"><abbr title="\Drupal\Core\Entity\EntityMalformedException">EntityMalformedException</abbr></span>
+                                                            
+                                                 <section class="phpdocumentor-description"><p>Thrown if the entity is malformed.</p>
+</section>
 
-        
+                                    </dd>
+                                            </dl>
+
+    
+
+            <section>
+        <h5 class="phpdocumentor-return-value__heading">Return values</h5>
+        <span class="phpdocumentor-signature__response_type">array&lt;string|int, mixed&gt;</span>
+                    &mdash;
+                <section class="phpdocumentor-description"><p>An array representation of the serialized argument.</p>
+<ul>
+<li>For entities, the array contains:
+<ul>
+<li>'canonical': The absolute canonical URL of the entity.</li>
+<li>'type': The entity type ID.</li>
+<li>'bundle': The entity bundle.</li>
+<li>'id': The entity ID.</li>
+<li>'uuid': The entity UUID.</li>
+</ul>
+</li>
+<li>For non-entity arguments, the array contains a single element with the
+JSON-encoded value.</li>
+</ul>
+</section>
+
+            </section>
+
+</article>
+            </section>
+
         <div class="phpdocumentor-modal" id="source-view">
     <div class="phpdocumentor-modal-bg" data-exit-button></div>
     <div class="phpdocumentor-modal-container">
         <div class="phpdocumentor-modal-content">
-            <pre style="max-height: 500px; overflow-y: scroll" data-src="" class="language-php line-numbers linkable-line-numbers"></pre>
+            <pre style="max-height: 500px; overflow-y: scroll" data-src="files/modules/alias_subpaths_decoupled_router/src/SerializerHelper.php.txt" class="language-php line-numbers linkable-line-numbers"></pre>
         </div>
         <button data-exit-button class="phpdocumentor-modal__close">&times;</button>
     </div>
@@ -244,7 +395,7 @@
     </article>
                                 </section>
                 <section class="phpdocumentor-on-this-page__sidebar">
-                            
+                                
     <section class="phpdocumentor-on-this-page__content">
         <strong class="phpdocumentor-on-this-page__title">On this page</strong>
 
@@ -252,11 +403,17 @@
             <li class="phpdocumentor-on-this-page-section__title">Table Of Contents</li>
             <li>
                 <ul class="phpdocumentor-list -clean">
-                                                                                                    <li><a href="namespaces/drupal-alias-subpaths-plugin-attribute.html#toc-classes">Classes</a></li>
-                                                                                                                    </ul>
+                                                                                <li><a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#toc-methods">Methods</a></li>
+                                    </ul>
             </li>
-
             
+            
+                        <li class="phpdocumentor-on-this-page-section__title">Methods</li>
+            <li>
+                <ul class="phpdocumentor-list -clean">
+                                            <li class=""><a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#method_serialize">serialize()</a></li>
+                                    </ul>
+            </li>
                     </ul>
     </section>
 
@@ -274,7 +431,7 @@
     </section>
 </section>
         </div>
-        <a href="namespaces/drupal-alias-subpaths-plugin-attribute.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
+        <a href="classes/Drupal-alias-subpaths-decoupled-router-SerializerHelper.html#top" class="phpdocumentor-back-to-top"><i class="fas fa-chevron-circle-up"></i></a>
 
     </main>
 
