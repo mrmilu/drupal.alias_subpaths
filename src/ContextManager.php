@@ -28,14 +28,24 @@ class ContextManager {
   private ContextBagFactory $contextBagFactory;
 
   /**
+   * @var \Drupal\alias_subpaths\UnlocalizeUrlService
+   */
+  private UnlocalizeUrlService $unlocalizeUrlService;
+
+  /**
    * Constructs a new ContextManager.
    *
    * @param \Drupal\alias_subpaths\ContextBagFactory $contextBagFactory
    *   The factory service used to create new context bags.
+   * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalizeUrlService
    */
-  public function __construct(ContextBagFactory $contextBagFactory) {
+  public function __construct(
+    ContextBagFactory $contextBagFactory,
+    UnlocalizeUrlService $unlocalizeUrlService
+  ) {
     $this->contextBag = [];
     $this->contextBagFactory = $contextBagFactory;
+    $this->unlocalizeUrlService = $unlocalizeUrlService;
   }
 
   /**
@@ -51,6 +61,7 @@ class ContextManager {
    *   The context bag associated with the given key.
    */
   public function getContextBag($key): ContextBag {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
     if (array_key_exists($key, $this->contextBag)) {
       return $this->contextBag[$key];
     }
@@ -74,6 +85,7 @@ class ContextManager {
    *   Thrown if there is an error processing the context bag.
    */
   public function processContextBag($key): array {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
     return $this->getContextBag($key)->process();
   }
 
@@ -87,6 +99,7 @@ class ContextManager {
    *   TRUE if the context bag is empty, FALSE otherwise.
    */
   public function isEmpty(string $key): bool {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
     return $this->getContextBag($key)->isEmpty();
   }
 

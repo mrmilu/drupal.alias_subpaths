@@ -120,4 +120,8 @@ class AliasSubpathsManager implements ContainerInjectionInterface {
     return $routeInfo;
   }
 
+  public function getContextManager() {
+    return $this->contextManager;
+  }
+
 }

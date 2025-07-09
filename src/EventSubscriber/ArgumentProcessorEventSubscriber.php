@@ -63,7 +63,6 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Routing\AdminContext $admin_context
    *   The admin context service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
-   *   The module handler service.
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
@@ -150,16 +149,12 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     }
 
     $requested_uri = urldecode($request->getPathInfo());
-    try {
-      $path_data = $this->aliasSubpathsManager->resolve($requested_uri);
-    }
-    catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
-      throw new NotFoundHttpException();
-    }
+
+    $params = $this->aliasSubpathsManager->getContextManager()->getContextBag($requested_uri)->getProcessedContent();
 
     $response = $event->getResponse();
 
-    foreach ($path_data['params'] as $param) {
+    foreach ($params as $param) {
       if (is_array($param)) {
         foreach ($param as $arg) {
           $this->addCacheableDependency($response, $arg);

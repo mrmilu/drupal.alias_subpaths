@@ -29,16 +29,23 @@ class AliasSubpathsAliasManager {
   private ContextManager $contextManager;
 
   /**
+   * @var \Drupal\alias_subpaths\UnlocalizeUrlService
+   */
+  private UnlocalizeUrlService $unlocalizeUrlService;
+
+  /**
    * Constructs a new AliasSubpathsAliasManager.
    *
    * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
    *   An alias manager for looking up the system path.
    * @param \Drupal\alias_subpaths\ContextManager $context_manager
    *   The context manager service.
+   * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalize_url_service
    */
-  public function __construct(AliasManagerInterface $alias_manager, ContextManager $context_manager) {
+  public function __construct(AliasManagerInterface $alias_manager, ContextManager $context_manager, UnlocalizeUrlService $unlocalize_url_service) {
     $this->aliasManager = $alias_manager;
     $this->contextManager = $context_manager;
+    $this->unlocalizeUrlService = $unlocalize_url_service;
   }
 
   /**
@@ -57,6 +64,7 @@ class AliasSubpathsAliasManager {
    *   The resolved system path.
    */
   public function resolveUrl($path) {
+    $path = $this->unlocalizeUrlService->unlocalizeUrl($path);
     $contextBag = $this->contextManager->getContextBag($path);
     if ($contextBag->getPath()) {
       return $contextBag->getPath();
