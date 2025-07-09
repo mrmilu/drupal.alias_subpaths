@@ -72,6 +72,11 @@ class AliasSubpathsAliasManager {
 
     $path_parts = explode('/', trim($path, '/'));
 
+    // Filter empty parts to avoid issues with leading/trailing slashes.
+    $path_parts = array_filter($path_parts, function ($part) {
+      return !empty($part);
+    });
+
     while (count($path_parts) > 0) {
       $current_alias = '/' . implode('/', $path_parts);
       $current_path = $this->aliasManager->getPathByAlias($current_alias);
