@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<phpdocumentor configVersion="3"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="https://www.phpdoc.org">
+  <title>Drupal Alias Subpaths</title>
+  <paths>
+    <output>docs</output>
+  </paths>
+  <version number="latest">
+    <api>
+      <source dsn=".">
+        <path>.</path>
+      </source>
+      <extensions>
+        <extension>php</extension>
+        <extension>module</extension>
+        <extension>theme</extension>
+        <extension>inc</extension>
+      </extensions>
+      <ignore hidden="true" symlinks="true">
+        <path>tests/**/*</path>
+      </ignore>
+      <markers>
+        <marker>todo</marker>
+        <marker>fixme</marker>
+      </markers>
+    </api>
+  </version>
+</phpdocumentor>

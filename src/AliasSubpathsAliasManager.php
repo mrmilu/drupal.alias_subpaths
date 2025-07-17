@@ -2,55 +2,93 @@
 
 namespace Drupal\alias_subpaths;
 
-use Drupal\Component\Datetime\TimeInterface;
-use Drupal\Core\Cache\CacheBackendInterface;
-use Drupal\Core\Language\LanguageManagerInterface;
-use Drupal\path_alias\AliasManager;
-use Drupal\path_alias\AliasRepositoryInterface;
-use Drupal\path_alias\AliasWhitelistInterface;
+use Drupal\path_alias\AliasManagerInterface;
 
-class AliasSubpathsAliasManager extends AliasManager {
+/**
+ * Manages alias subpaths resolution.
+ *
+ * This class is responsible for resolving URL paths using the alias manager
+ * and processing context arguments via the context manager. It attempts to find
+ * the system path corresponding to a given alias by progressively reducing
+ * the path until a valid system path is found.
+ */
+class AliasSubpathsAliasManager {
 
   /**
+   * The alias manager for looking up the system path.
+   *
+   * @var \Drupal\path_alias\AliasManagerInterface
+   */
+  protected $aliasManager;
+
+  /**
+   * The context manager service.
+   *
    * @var \Drupal\alias_subpaths\ContextManager
    */
-  private ContextManager $context_manager;
+  private ContextManager $contextManager;
 
   /**
-   * @param \Drupal\path_alias\AliasRepositoryInterface $alias_repository
-   * @param \Drupal\path_alias\AliasWhitelistInterface $whitelist
-   * @param \Drupal\Core\Language\LanguageManagerInterface $language_manager
-   * @param \Drupal\Core\Cache\CacheBackendInterface $cache
-   * @param \Drupal\Component\Datetime\TimeInterface $time
-   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   * @var \Drupal\alias_subpaths\UnlocalizeUrlService
    */
-  public function __construct(
-    AliasRepositoryInterface $alias_repository,
-    AliasWhitelistInterface $whitelist,
-    LanguageManagerInterface $language_manager,
-    CacheBackendInterface $cache,
-    TimeInterface $time,
-    ContextManager $context_manager,
-  ) {
-    parent::__construct($alias_repository, $whitelist, $language_manager, $cache, $time);
-    $this->context_manager = $context_manager;
+  private UnlocalizeUrlService $unlocalizeUrlService;
+
+  /**
+   * Constructs a new AliasSubpathsAliasManager.
+   *
+   * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
+   *   An alias manager for looking up the system path.
+   * @param \Drupal\alias_subpaths\ContextManager $context_manager
+   *   The context manager service.
+   * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalize_url_service
+   */
+  public function __construct(AliasManagerInterface $alias_manager, ContextManager $context_manager, UnlocalizeUrlService $unlocalize_url_service) {
+    $this->aliasManager = $alias_manager;
+    $this->contextManager = $context_manager;
+    $this->unlocalizeUrlService = $unlocalize_url_service;
   }
 
-  public function getPathByAlias($alias, $langcode = NULL) {
-    $this->context_manager->setRequestedUrl($alias);
-    $alias_parts= explode('/', trim($alias, '/'));
-    while (count($alias_parts) > 0) {
-      $current_alias = '/' . implode('/', $alias_parts);
-      $path = parent::getPathByAlias($current_alias, $langcode);
-      if ($path !== $current_alias) {
-        $this->context_manager->setResolvedUrl($current_alias);
-        return $path;
-      }
-      $argument = array_pop($alias_parts);
-      $this->context_manager->addToContextBag($argument);
+  /**
+   * Resolves the given URL path to its system path.
+   *
+   * This method uses the context manager to retrieve or create a context bag
+   * for the provided path. If the context bag already contains a resolved path,
+   * that path is returned. Otherwise, the method attempts to resolve the path
+   * by progressively reducing the alias and checking for a corresponding system
+   * path. Any extracted arguments are added to the context bag.
+   *
+   * @param string $path
+   *   The URL path to resolve.
+   *
+   * @return string
+   *   The resolved system path.
+   */
+  public function resolveUrl($path) {
+    $path = $this->unlocalizeUrlService->unlocalizeUrl($path);
+    $contextBag = $this->contextManager->getContextBag($path);
+    if ($contextBag->getPath()) {
+      return $contextBag->getPath();
     }
-    $this->context_manager->setResolvedUrl($alias);
-    return $alias;
+
+    $path_parts = explode('/', trim($path, '/'));
+
+    // Filter empty parts to avoid issues with leading/trailing slashes.
+    $path_parts = array_filter($path_parts, function ($part) {
+      return !empty($part);
+    });
+
+    while (count($path_parts) > 0) {
+      $current_alias = '/' . implode('/', $path_parts);
+      $current_path = $this->aliasManager->getPathByAlias($current_alias);
+      if ($current_path !== $current_alias) {
+        $contextBag->setPath($current_path);
+        return $current_path;
+      }
+      $argument = array_pop($path_parts);
+      $contextBag->add($argument);
+    }
+
+    return $contextBag->setPath($path);
   }
 
 }
