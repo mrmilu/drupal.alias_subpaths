@@ -1,0 +1,51 @@
+<?php
+
+/**
+ * @file
+ * Hooks for alias_subpaths_decoupled_router.module.
+ */
+
+use Drupal\Core\Entity\EntityMalformedException;
+use Drupal\alias_subpaths_decoupled_router\SerializerHelper;
+
+/**
+ * Implements hook_decoupled_router_info_alter().
+ */
+function alias_subpaths_decoupled_router_decoupled_router_info_alter(&$output, $context) {
+  $output['alias_subpaths_context'] = [];
+
+  $path = \Drupal::request()->query->get('path');
+  if (!$path) {
+    return;
+  }
+  /** @var \Drupal\alias_subpaths\ContextManager $service */
+  $service = \Drupal::service('alias_subpaths.context_manager');
+  if ($service->isEmpty($path)) {
+    return;
+  }
+
+  $arguments = $service->getContextBag($path)->getProcessedContent();
+
+  foreach ($arguments as $input => $argument) {
+    if (is_array($argument)) {
+      $serialized_argument = [];
+      foreach ($argument as $arg) {
+        try {
+          $serialized_argument[] = SerializerHelper::serialize($arg);
+        }
+        catch (EntityMalformedException $e) {
+          continue;
+        }
+      }
+    }
+    else {
+      try {
+        $serialized_argument = SerializerHelper::serialize($argument);
+      }
+      catch (EntityMalformedException $e) {
+        continue;
+      }
+    }
+    $output['alias_subpaths_context'][$input] = $serialized_argument;
+  }
+}

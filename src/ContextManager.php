@@ -2,109 +2,105 @@
 
 namespace Drupal\alias_subpaths;
 
+/**
+ * Manages context bags for alias subpaths.
+ *
+ * This class is responsible for retrieving, creating, and processing context
+ * bags identified by a unique key. It uses a ContextBagFactory service to
+ * create new context bags when one does not already exist for a given key.
+ */
 class ContextManager {
 
   /**
-   * Array to hold the context.
+   * An associative array holding context bags.
+   *
+   * Each context bag is keyed by an identifier.
    *
    * @var array
    */
-  protected $contextBag;
+  protected array $contextBag;
 
   /**
-   * Array to hold the processed context.
+   * The context bag factory service.
    *
-   * @var array
+   * @var \Drupal\alias_subpaths\ContextBagFactory
    */
-  protected $processedContextBag;
-
-  private string $requestedUrl;
-
-  private string $resolvedUrl;
+  private ContextBagFactory $contextBagFactory;
 
   /**
-   * Constructor for ContextManager.
+   * @var \Drupal\alias_subpaths\UnlocalizeUrlService
    */
-  public function __construct() {
+  private UnlocalizeUrlService $unlocalizeUrlService;
+
+  /**
+   * Constructs a new ContextManager.
+   *
+   * @param \Drupal\alias_subpaths\ContextBagFactory $contextBagFactory
+   *   The factory service used to create new context bags.
+   * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalizeUrlService
+   */
+  public function __construct(
+    ContextBagFactory $contextBagFactory,
+    UnlocalizeUrlService $unlocalizeUrlService
+  ) {
     $this->contextBag = [];
-    $this->processedContextBag = [];
-    $this->requestedUrl = '';
-    $this->resolvedUrl = '';
+    $this->contextBagFactory = $contextBagFactory;
+    $this->unlocalizeUrlService = $unlocalizeUrlService;
   }
 
   /**
-   * Adds an item to the contextBag.
+   * Retrieves the context bag for the specified key.
    *
-   * @param mixed $value
-   *   The value to add to the bag.
+   * If a context bag does not already exist for the given key, a new one is
+   * created using the context bag factory.
+   *
+   * @param mixed $key
+   *   The unique identifier for the context bag.
+   *
+   * @return \Drupal\alias_subpaths\ContextBag
+   *   The context bag associated with the given key.
    */
-  public function addToContextBag($value) {
-    $this->contextBag[] = $value;
+  public function getContextBag($key): ContextBag {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
+    if (array_key_exists($key, $this->contextBag)) {
+      return $this->contextBag[$key];
+    }
+    $this->contextBag[$key] = $this->contextBagFactory->create();
+    return $this->contextBag[$key];
   }
 
   /**
-   * Adds an item to the processedContextBag.
+   * Processes the context bag for the given key.
+   *
+   * This method retrieves the context bag identified by the key and processes
+   * it, returning the processed context data.
+   *
+   * @param mixed $key
+   *   The unique identifier for the context bag.
+   *
+   * @return array
+   *   The processed context data.
+   *
+   * @throws \Drupal\Component\Plugin\Exception\PluginException
+   *   Thrown if there is an error processing the context bag.
+   */
+  public function processContextBag($key): array {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
+    return $this->getContextBag($key)->process();
+  }
+
+  /**
+   * Determines whether the context bag for the given key is empty.
    *
    * @param string $key
-   *   The key for the item.
-   * @param mixed $value
-   *   The value to add to the bag.
-   */
-  public function addToProcessedContextBag($key, $value) {
-    $this->processedContextBag[$key] = $value;
-  }
-
-  /**
-   * Retrieves the contextBag.
+   *   The unique identifier for the context bag.
    *
-   * @return array
-   *   The context bag.
+   * @return bool
+   *   TRUE if the context bag is empty, FALSE otherwise.
    */
-  public function getContextBag() {
-    return $this->contextBag;
+  public function isEmpty(string $key): bool {
+    $key = $this->unlocalizeUrlService->unlocalizeUrl($key);
+    return $this->getContextBag($key)->isEmpty();
   }
 
-  /**
-   * Retrieves the processedContextBag.
-   *
-   * @return array
-   *   The processed context bag.
-   */
-  public function getProcessedContextBag() {
-    return $this->processedContextBag;
-  }
-
-  /**
-   * Clears all items in the contextBag.
-   */
-  public function clearContextBag() {
-    $this->contextBag = [];
-  }
-
-  /**
-   * Clears all items in the processedContextBag.
-   */
-  public function clearProcessedContextBag() {
-    $this->processedContextBag = [];
-  }
-
-  public function getRequestedUrl(): string {
-    return $this->requestedUrl;
-  }
-
-  public function setRequestedUrl(string $requestedUrl): void {
-    $this->requestedUrl = $requestedUrl;
-  }
-
-  public function getResolvedUrl(): string {
-    return $this->resolvedUrl;
-  }
-
-  public function setResolvedUrl(string $resolvedUrl): void {
-    $this->resolvedUrl = $resolvedUrl;
-  }
-
-  public function contextBagIsEmpty(): bool  {
-    return count($this->contextBag) === 0;
-  }
 }
