@@ -32,6 +32,20 @@ class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
    * {@inheritdoc}
    */
   public function processInbound($path, Request $request) {
+    if ($request->attributes->get('_disable_alias_subpaths')) {
+      return $path;
+    }
+
+    if (\Drupal::moduleHandler()->moduleExists('redirect')) {
+      $redirectRespository = \Drupal::service('redirect.repository');
+      $sourcePath = trim($path, '/');
+      $redirects = $redirectRespository->findBySourcePath($sourcePath);
+
+      $redirect = reset($redirects);
+      if ($redirect) {
+        return $path;
+      }
+    }
     return $this->aliasSubpathsAliasManager->resolveUrl($path);
   }
 
