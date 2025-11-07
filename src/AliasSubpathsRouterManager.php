@@ -3,6 +3,8 @@
 namespace Drupal\alias_subpaths;
 
 use Drupal\Core\Entity\EntityInterface;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
 
 /**
@@ -12,6 +14,10 @@ use Symfony\Component\Routing\RouterInterface;
  * the route name along with any entity arguments present in the route.
  */
 class AliasSubpathsRouterManager {
+
+  const SYSTEM_404 = 'system.404';
+
+  const SYSTEM_405 = 'system.405';
 
   /**
    * The router service.
@@ -47,7 +53,19 @@ class AliasSubpathsRouterManager {
    *   - 'arguments': An array of entity arguments extracted from the route.
    */
   public function getRouteInfo($path): array {
-    $route = $this->router->match($path);
+    try {
+      $route = $this->router->match($path);
+    } catch (ResourceNotFoundException $e) {
+      return [
+        'name' => self::SYSTEM_404,
+        'arguments' => []
+      ];
+    } catch (MethodNotAllowedException $e) {
+      return [
+        'name' => self::SYSTEM_405,
+        'arguments' => []
+      ];
+    }
     $arguments = [];
     foreach ($route as $param) {
       if ($param instanceof EntityInterface) {

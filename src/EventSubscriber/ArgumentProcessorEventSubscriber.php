@@ -11,6 +11,7 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\CurrentRouteMatch;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
@@ -98,6 +99,9 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    */
   public function onRequest(RequestEvent $event) {
     $request = $event->getRequest();
+    if ($request->getMethod() !== Request::METHOD_GET) {
+      return;
+    }
     if ($request->attributes->get('_disable_alias_subpaths')) {
       return;
     }
@@ -117,6 +121,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
       $this->aliasSubpathsManager->resolve($requested_uri);
     }
     catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
+      $request->attributes->set('_disable_alias_subpaths', TRUE);
       throw new NotFoundHttpException();
     }
   }
