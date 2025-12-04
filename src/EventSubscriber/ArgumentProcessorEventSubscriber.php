@@ -2,15 +2,17 @@
 
 namespace Drupal\alias_subpaths\EventSubscriber;
 
+use Drupal\alias_subpaths\AliasSubpathsAliasManager;
 use Drupal\alias_subpaths\AliasSubpathsManager;
+use Drupal\alias_subpaths\AliasSubpathsRouterManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\alias_subpaths\Plugin\ArgumentProcessorManager;
 use Drupal\Core\Cache\CacheableResponseInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\CurrentRouteMatch;
-use Drupal\path_alias\AliasManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -56,11 +58,25 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   private ModuleHandlerInterface $moduleHandler;
 
   /**
-   * The alias manager for looking up the system path.
+   * The alias subpaths alias manager.
    *
-   * @var \Drupal\path_alias\AliasManagerInterface
+   * @var \Drupal\alias_subpaths\AliasSubpathsAliasManager
    */
-  private AliasManagerInterface $aliasManager;
+  private AliasSubpathsAliasManager $aliasSubpathsAliasManager;
+
+  /**
+   * The alias subpaths router manager.
+   *
+   * @var \Drupal\alias_subpaths\AliasSubpathsRouterManager
+   */
+  private AliasSubpathsRouterManager $aliasSubpathsRouterManager;
+
+  /**
+   * The ArgumentProcessorManager service.
+   *
+   * @var \Drupal\alias_subpaths\Plugin\ArgumentProcessorManager
+   */
+  private ArgumentProcessorManager $argumentProcessorManager;
 
   /**
    * Constructs a new ArgumentProcessorEventSubscriber.
@@ -73,21 +89,29 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    *   The admin context service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
    *   The module handler service.
-   * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
-   *   The alias manager for looking up the system path.
+   * @param \Drupal\alias_subpaths\AliasSubpathsAliasManager $alias_subpaths_alias_manager
+   *   The alias subpaths alias manager.
+   * @param \Drupal\alias_subpaths\AliasSubpathsRouterManager $alias_subpaths_router_manager
+   *   The alias subpaths router manager.
+   * @param \Drupal\alias_subpaths\Plugin\ArgumentProcessorManager $argument_processor_manager
+   *   The ArgumentProcessorManager service.
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
     AliasSubpathsManager $alias_subpaths_manager,
     AdminContext $admin_context,
     ModuleHandlerInterface $module_handler,
-    AliasManagerInterface $alias_manager
+    AliasSubpathsAliasManager $alias_subpaths_alias_manager,
+    AliasSubpathsRouterManager $alias_subpaths_router_manager,
+    ArgumentProcessorManager $argument_processor_manager,
   ) {
     $this->currentRouteMatch = $current_route_match;
     $this->adminContext = $admin_context;
     $this->aliasSubpathsManager = $alias_subpaths_manager;
     $this->moduleHandler = $module_handler;
-    $this->aliasManager = $alias_manager;
+    $this->aliasSubpathsAliasManager = $alias_subpaths_alias_manager;
+    $this->aliasSubpathsRouterManager = $alias_subpaths_router_manager;
+    $this->argumentProcessorManager = $argument_processor_manager;
   }
 
   /**
@@ -219,8 +243,16 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    *   TRUE if the URI is unaliased, FALSE otherwise.
    */
   private function isUnaliasedPath(string $requested_uri): bool {
-    $alias = $this->aliasManager->getPathByAlias($requested_uri);
-    return $alias === $requested_uri;
+    $internal_path = $this->aliasSubpathsAliasManager->resolveUrl($requested_uri);
+    $routeInfo = $this->aliasSubpathsRouterManager->getRouteInfo($internal_path);
+
+    foreach ($this->argumentProcessorManager->getDefinitions() as $definition) {
+      if ($definition['route_name'] === $routeInfo['name']) {
+        return $requested_uri === $internal_path;
+      }
+    }
+
+    return FALSE;
   }
 
 }

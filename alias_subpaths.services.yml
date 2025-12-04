@@ -25,7 +25,7 @@ services:
 
   alias_subpaths.argument_processor_subscriber:
     class: Drupal\alias_subpaths\EventSubscriber\ArgumentProcessorEventSubscriber
-    arguments: ['@current_route_match', '@alias_subpaths.manager', '@router.admin_context', '@module_handler', '@path_alias.manager']
+    arguments: ['@current_route_match', '@alias_subpaths.manager', '@router.admin_context', '@module_handler', '@alias_subpaths.alias_manager', '@alias_subpaths.router_manager', '@plugin.manager.argument_processor']
     tags:
       - { name: event_subscriber }
 
