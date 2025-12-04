@@ -10,6 +10,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Routing\AdminContext;
 use Drupal\Core\Routing\CurrentRouteMatch;
+use Drupal\path_alias\AliasManagerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -55,6 +56,13 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
   private ModuleHandlerInterface $moduleHandler;
 
   /**
+   * The alias manager for looking up the system path.
+   *
+   * @var \Drupal\path_alias\AliasManagerInterface
+   */
+  private AliasManagerInterface $aliasManager;
+
+  /**
    * Constructs a new ArgumentProcessorEventSubscriber.
    *
    * @param \Drupal\Core\Routing\CurrentRouteMatch $current_route_match
@@ -64,17 +72,22 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Routing\AdminContext $admin_context
    *   The admin context service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The module handler service.
+   * @param \Drupal\path_alias\AliasManagerInterface $alias_manager
+   *   The alias manager for looking up the system path.
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
     AliasSubpathsManager $alias_subpaths_manager,
     AdminContext $admin_context,
     ModuleHandlerInterface $module_handler,
+    AliasManagerInterface $alias_manager
   ) {
     $this->currentRouteMatch = $current_route_match;
     $this->adminContext = $admin_context;
     $this->aliasSubpathsManager = $alias_subpaths_manager;
     $this->moduleHandler = $module_handler;
+    $this->aliasManager = $alias_manager;
   }
 
   /**
@@ -107,6 +120,11 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     }
 
     $requested_uri = urldecode($request->getPathInfo());
+    // Don't execute alias subpaths processing for unaliased paths to avoid
+    // 404 page.
+    if ($this->isUnaliasedPath($requested_uri)) {
+      return;
+    }
 
     // Add new parameter to current route to determine if the route is a route
     // that we are validating with this module.
@@ -189,6 +207,20 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
       return;
     }
     $response->addCacheableDependency($param);
+  }
+
+  /**
+   * Determines if the given requested URI is an unaliased path.
+   *
+   * @param string $requested_uri
+   *   The requested URI to check.
+   *
+   * @return bool
+   *   TRUE if the URI is unaliased, FALSE otherwise.
+   */
+  private function isUnaliasedPath(string $requested_uri): bool {
+    $alias = $this->aliasManager->getPathByAlias($requested_uri);
+    return $alias === $requested_uri;
   }
 
 }
