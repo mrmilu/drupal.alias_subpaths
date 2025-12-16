@@ -3,6 +3,7 @@
 namespace Drupal\alias_subpaths\PathProcessor;
 
 use Drupal\alias_subpaths\AliasSubpathsAliasManager;
+use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -46,7 +47,12 @@ class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
         return $path;
       }
     }
-    return $this->aliasSubpathsAliasManager->resolveUrl($path);
+    try {
+      return $this->aliasSubpathsAliasManager->resolveUrl($path);
+    }
+    catch (NotRouteApplicableException $e) {
+      return $path;
+    }
   }
 
 }

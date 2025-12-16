@@ -5,6 +5,7 @@ namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -60,7 +61,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     try {
       $path_data = $this->aliasSubpathsManager->resolve($path);
     }
-    catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException $exception) {
+    catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException | NotRouteApplicableException $exception) {
       $event->getResponse()->setData([
         'message' => $this->t(
           'Unable to resolve path @path.',

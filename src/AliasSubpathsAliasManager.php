@@ -2,6 +2,7 @@
 
 namespace Drupal\alias_subpaths;
 
+use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
 use Drupal\path_alias\AliasManagerInterface;
 
 /**
@@ -62,6 +63,8 @@ class AliasSubpathsAliasManager {
    *
    * @return string
    *   The resolved system path.
+   * @throws \Drupal\alias_subpaths\Exception\NotRouteApplicableException
+   *   Thrown when the route is not applicable.
    */
   public function resolveUrl($path) {
     $path = $this->unlocalizeUrlService->unlocalizeUrl($path);
@@ -88,7 +91,7 @@ class AliasSubpathsAliasManager {
       $contextBag->add($argument);
     }
 
-    return $contextBag->setPath($path);
+    throw new NotRouteApplicableException();
   }
 
 }
