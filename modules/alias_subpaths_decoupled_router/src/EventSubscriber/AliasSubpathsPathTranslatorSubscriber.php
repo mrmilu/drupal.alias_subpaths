@@ -5,6 +5,7 @@ namespace Drupal\alias_subpaths_decoupled_router\EventSubscriber;
 use Drupal\alias_subpaths\AliasSubpathsManager;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
+use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
@@ -72,6 +73,9 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
       ]);
       $event->getResponse()->setStatusCode(404);
       $event->stopPropagation();
+      return;
+    }
+    catch (NotRouteApplicableException $exception) {
       return;
     }
     foreach ($path_data['params'] as $param) {

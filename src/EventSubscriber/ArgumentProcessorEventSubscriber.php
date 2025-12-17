@@ -3,6 +3,7 @@
 namespace Drupal\alias_subpaths\EventSubscriber;
 
 use Drupal\alias_subpaths\AliasSubpathsManager;
+use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
 use Drupal\alias_subpaths\Exception\InvalidArgumentException;
 use Drupal\alias_subpaths\Exception\NotAllowedArgumentsException;
 use Drupal\Core\Cache\CacheableResponseInterface;
@@ -102,6 +103,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     if ($request->getMethod() !== Request::METHOD_GET) {
       return;
     }
+
     if ($request->attributes->get('_disable_alias_subpaths')) {
       return;
     }
@@ -123,6 +125,9 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
     catch (NotAllowedArgumentsException | InvalidArgumentException $exception) {
       $request->attributes->set('_disable_alias_subpaths', TRUE);
       throw new NotFoundHttpException();
+    }
+    catch (NotRouteApplicableException $exception) {
+      return;
     }
   }
 
