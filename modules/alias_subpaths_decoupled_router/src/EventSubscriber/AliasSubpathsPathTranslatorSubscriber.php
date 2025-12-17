@@ -61,7 +61,7 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
     try {
       $path_data = $this->aliasSubpathsManager->resolve($path);
     }
-    catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException | NotRouteApplicableException $exception) {
+    catch (NotAllowedArgumentsException | InvalidArgumentException | ResourceNotFoundException $exception) {
       $event->getResponse()->setData([
         'message' => $this->t(
           'Unable to resolve path @path.',
@@ -73,6 +73,9 @@ class AliasSubpathsPathTranslatorSubscriber implements EventSubscriberInterface 
       ]);
       $event->getResponse()->setStatusCode(404);
       $event->stopPropagation();
+      return;
+    }
+    catch (NotRouteApplicableException $exception) {
       return;
     }
     foreach ($path_data['params'] as $param) {
