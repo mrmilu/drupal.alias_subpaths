@@ -16,7 +16,23 @@ the processed arguments, and it is available to use it anywhere.
 ## Installation
 To install this module as mrmilu module inside `modules/mrmilu` folder following composer commands should be executed:
 <ul>
-<li>Tell composer.json project file where the module repository is located</li>
+<li>Install packages to avoid that the module will be installed in vendor folder.</li>
+
+```shell
+composer require mnsami/composer-custom-directory-installer
+composer require oomphinc/composer-installers-extender
+```
+
+<li>Before installer-paths section in composer.json file, add this section:</li>
+
+```json
+"installer-types": [
+  "drupal-mrmilu-module"
+],
+```
+
+<li>Tell composer.json project file where the module repository is located and this section will be added automatically
+to repositories section in composer file.</li>
 
 ```shell
 composer config repositories.alias_subpaths vcs git@github.com:mrmilu/drupal.alias_subpaths.git
@@ -267,17 +283,7 @@ class TagsArgumentResolver extends BaseArgumentResolver {
   }
 
   public function getProcessedValue($value): mixed {
-    if ($this->tids) {
-      return Term::load(reset($this->tids));
-    }
-    $tids = \Drupal::entityQuery('taxonomy_term')
-      ->accessCheck()
-      ->condition('vid', 'tags')
-      ->condition('name', $value)
-      ->range(0, 1)
-      ->execute();
-    $this->tids = $tids;
-    return Term::load(reset($tids));
+    return Term::load(reset($this->tids));
   }
 
   public function getDefaultValue(): mixed {
