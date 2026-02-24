@@ -1,0 +1,35 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-merge-conflict
+      - id: check-yaml
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: local
+    hooks:
+      - id: phpcs-drupal
+        name: PHPCS - Drupal coding standards
+        entry: vendor/bin/phpcs
+        language: script
+        types: [php]
+        args:
+          - --standard=Drupal,DrupalPractice
+          - --extensions=php,module,inc,install,test,profile,theme,yml
+        pass_filenames: true
+
+      - id: phpstan
+        name: PHPStan - Static analysis
+        entry: vendor/bin/phpstan analyse
+        language: script
+        types: [php]
+        pass_filenames: false
+
+  - repo: https://github.com/commitizen-tools/commitizen
+    rev: v3.29.0
+    hooks:
+      - id: commitizen
+        stages: [commit-msg]

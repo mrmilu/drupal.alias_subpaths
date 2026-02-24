@@ -20,7 +20,7 @@ class AliasSubpathsAliasManager {
    *
    * @var \Drupal\path_alias\AliasManagerInterface
    */
-  protected $aliasManager;
+  protected AliasManagerInterface $aliasManager;
 
   /**
    * The context manager service.
@@ -30,6 +30,8 @@ class AliasSubpathsAliasManager {
   private ContextManager $contextManager;
 
   /**
+   * Service for unlocalize URLs.
+   *
    * @var \Drupal\alias_subpaths\UnlocalizeUrlService
    */
   private UnlocalizeUrlService $unlocalizeUrlService;
@@ -42,6 +44,7 @@ class AliasSubpathsAliasManager {
    * @param \Drupal\alias_subpaths\ContextManager $context_manager
    *   The context manager service.
    * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalize_url_service
+   *   The unlocalize URL service.
    */
   public function __construct(AliasManagerInterface $alias_manager, ContextManager $context_manager, UnlocalizeUrlService $unlocalize_url_service) {
     $this->aliasManager = $alias_manager;
@@ -63,6 +66,7 @@ class AliasSubpathsAliasManager {
    *
    * @return string
    *   The resolved system path.
+   *
    * @throws \Drupal\alias_subpaths\Exception\NotRouteApplicableException
    *   Thrown when the route is not applicable.
    */

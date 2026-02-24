@@ -1,5 +1,21 @@
 {
     "name": "mrmilu/alias_subpaths",
     "description": "Allows have aliases with subpaths.",
-    "type": "drupal-mrmilu-module"
+    "type": "drupal-mrmilu-module",
+    "require-dev": {
+        "drupal/coder": "^8.3",
+        "squizlabs/php_codesniffer": "^3.13",
+        "mglaman/phpstan-drupal": "^2.0",
+        "drupal/core": "^10",
+        "tomasvotruba/cognitive-complexity": "^1.0"
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": true,
+            "drupal/core-composer-scaffold": false,
+            "drupal/core-project-message": false,
+            "phpstan/extension-installer": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    }
 }
