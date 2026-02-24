@@ -1,0 +1,9 @@
+includes:
+  - vendor/mglaman/phpstan-drupal/extension.neon
+
+parameters:
+  level: 2
+  paths:
+    - src/
+  ignoreErrors:
+    - '#Unsafe usage of new static\(\)#'
