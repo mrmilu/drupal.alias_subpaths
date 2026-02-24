@@ -13,6 +13,21 @@ the processed arguments, and it is available to use it anywhere.
 \Drupal::service('alias_subpaths.context_manager')->getProcessedContextBag();
 ```
 
+## Requirements
+
+Install pre-commit
+
+# Mac
+brew install pre-commit
+
+# Linux
+pip install pre-commit
+
+# From project root
+pre-commit install
+pre-commit install --hook-type commit-msg
+
+
 ## Installation
 To install this module as mrmilu module inside `modules/mrmilu` folder following composer commands should be executed:
 <ul>
