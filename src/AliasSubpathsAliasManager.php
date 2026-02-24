@@ -20,7 +20,7 @@ class AliasSubpathsAliasManager {
    *
    * @var \Drupal\path_alias\AliasManagerInterface
    */
-  protected $aliasManager;
+  protected AliasManagerInterface $aliasManager;
 
   /**
    * The context manager service.
