@@ -21,6 +21,13 @@ repos:
           - --extensions=php,module,inc,install,test,profile,theme,yml
         pass_filenames: true
 
+      - id: phpstan
+        name: PHPStan - Static analysis
+        entry: vendor/bin/phpstan analyse
+        language: script
+        types: [php]
+        pass_filenames: false
+
   - repo: https://github.com/commitizen-tools/commitizen
     rev: v3.29.0
     hooks:

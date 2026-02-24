@@ -4,7 +4,9 @@ namespace Drupal\alias_subpaths\PathProcessor;
 
 use Drupal\alias_subpaths\AliasSubpathsAliasManager;
 use Drupal\alias_subpaths\Exception\NotRouteApplicableException;
+use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\PathProcessor\InboundPathProcessorInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -20,13 +22,37 @@ class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
   private AliasSubpathsAliasManager $aliasSubpathsAliasManager;
 
   /**
+   * Module handler.
+   *
+   * @var \Drupal\Core\Extension\ModuleHandlerInterface
+   */
+  private ModuleHandlerInterface $moduleHandler;
+
+  /**
+   * Dependency injection.
+   *
+   * @var \Symfony\Component\DependencyInjection\ContainerInterface
+   */
+  private ContainerInterface $container;
+
+  /**
    * Constructs a new PathProcessorAliasSubpaths.
    *
    * @param \Drupal\alias_subpaths\AliasSubpathsAliasManager $alias_subpaths_url_resolver
    *   The alias subpaths alias manager service.
+   * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The Module Handler service.
+   * @param \Symfony\Component\DependencyInjection\ContainerInterface $container
+   *   For dependency injection.
    */
-  public function __construct(AliasSubpathsAliasManager $alias_subpaths_url_resolver) {
+  public function __construct(
+    AliasSubpathsAliasManager $alias_subpaths_url_resolver,
+    ModuleHandlerInterface $module_handler,
+    ContainerInterface $container,
+  ) {
     $this->aliasSubpathsAliasManager = $alias_subpaths_url_resolver;
+    $this->moduleHandler = $module_handler;
+    $this->container = $container;
   }
 
   /**
@@ -37,14 +63,16 @@ class PathProcessorAliasSubpaths implements InboundPathProcessorInterface {
       return $path;
     }
 
-    if (\Drupal::moduleHandler()->moduleExists('redirect')) {
-      $redirectRespository = \Drupal::service('redirect.repository');
-      $sourcePath = trim($path, '/');
-      $redirects = $redirectRespository->findBySourcePath($sourcePath);
+    if ($this->moduleHandler->moduleExists('redirect')) {
+      if ($this->container->has('redirect.repository')) {
+        $redirectRepository = $this->container->get('redirect.repository');
+        $sourcePath = trim($path, '/');
+        $redirects = $redirectRepository->findBySourcePath($sourcePath);
 
-      $redirect = reset($redirects);
-      if ($redirect) {
-        return $path;
+        $redirect = reset($redirects);
+        if ($redirect) {
+          return $path;
+        }
       }
     }
     try {

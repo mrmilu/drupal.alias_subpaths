@@ -65,6 +65,7 @@ class ArgumentProcessorEventSubscriber implements EventSubscriberInterface {
    * @param \Drupal\Core\Routing\AdminContext $admin_context
    *   The admin context service.
    * @param \Drupal\Core\Extension\ModuleHandlerInterface $module_handler
+   *   The Module Handler.
    */
   public function __construct(
     CurrentRouteMatch $current_route_match,
