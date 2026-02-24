@@ -55,15 +55,17 @@ class AliasSubpathsRouterManager {
   public function getRouteInfo($path): array {
     try {
       $route = $this->router->match($path);
-    } catch (ResourceNotFoundException $e) {
+    }
+    catch (ResourceNotFoundException $e) {
       return [
         'name' => self::SYSTEM_404,
-        'arguments' => []
+        'arguments' => [],
       ];
-    } catch (MethodNotAllowedException $e) {
+    }
+    catch (MethodNotAllowedException $e) {
       return [
         'name' => self::SYSTEM_405,
-        'arguments' => []
+        'arguments' => [],
       ];
     }
     $arguments = [];

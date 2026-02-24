@@ -28,6 +28,8 @@ class ContextManager {
   private ContextBagFactory $contextBagFactory;
 
   /**
+   * Service for unlocalize URLs.
+   *
    * @var \Drupal\alias_subpaths\UnlocalizeUrlService
    */
   private UnlocalizeUrlService $unlocalizeUrlService;
@@ -38,10 +40,11 @@ class ContextManager {
    * @param \Drupal\alias_subpaths\ContextBagFactory $contextBagFactory
    *   The factory service used to create new context bags.
    * @param \Drupal\alias_subpaths\UnlocalizeUrlService $unlocalizeUrlService
+   *   The unlocalize URL service.
    */
   public function __construct(
     ContextBagFactory $contextBagFactory,
-    UnlocalizeUrlService $unlocalizeUrlService
+    UnlocalizeUrlService $unlocalizeUrlService,
   ) {
     $this->contextBag = [];
     $this->contextBagFactory = $contextBagFactory;
